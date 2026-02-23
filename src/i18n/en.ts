@@ -1,6 +1,6 @@
 export const en = {
   login: {
-    title: 'Erasmus+ Portal',
+    title: 'YOUTH AGENDA',
     description: 'Consortium documentation management',
     passwordLabel: 'Consortium password',
     placeholder: 'Enter the shared password',
