@@ -7,7 +7,8 @@ import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Users, FolderOpen, BookOpen, LogOut, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, Users, FolderOpen, BookOpen, LogOut } from 'lucide-react';
+import erasmusLogo from '@/assets/erasmus-logo.png';
 
 const participants = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
@@ -21,9 +22,7 @@ export function AppSidebar() {
     <Sidebar className="border-r-0">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sidebar-primary flex items-center justify-center">
-            <GraduationCap className="w-5 h-5 text-sidebar-primary-foreground" />
-          </div>
+          <img src={erasmusLogo} alt="Erasmus+ KA3" className="w-10 h-10 rounded-xl object-contain" />
           <div>
             <h2 className="font-semibold text-sidebar-foreground text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
               {t('sidebar.portalTitle') as string}
