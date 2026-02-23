@@ -1,60 +1,69 @@
 
+## Actualizar FAQs y enfoque a la convocatoria European Youth Together 2026
 
-## Actualizar la base de conocimiento del asistente IA con informacion de 2026
+### Problema
 
-### Resumen
+Las preguntas frecuentes (chips FAQ) en el DashboardChat y ErasmusChat hacen referencia a "plazos 2025" cuando el consorcio esta aplicando a la convocatoria **European Youth Together 2026** (ERASMUS-YOUTH-2026-YOUTH-TOG). Todo debe estar centrado en esta call 2026.
 
-Anadir al system prompt de la edge function `erasmus-chat` la informacion sobre:
-1. La convocatoria **European Youth Together 2026** (ERASMUS-YOUTH-2026-YOUTH-TOG) - accion KA3
-2. La **Erasmus+ Programme Guide 2026** (enlace actualizado)
+### Cambios
 
-### Cambios en el archivo
-
-**Archivo:** `supabase/functions/erasmus-chat/index.ts`
-
-Modificar el `SYSTEM_PROMPT` para anadir:
-
-#### A) En la seccion "Main Portals", actualizar/anadir:
-- Erasmus+ Programme Guide 2026: `https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026`
-- Erasmus+ Programme Guide 2026 (PDF EN): `https://erasmus-plus.ec.europa.eu/sites/default/files/2025-11/programme-guide-2026_en.pdf`
-- Erasmus+ Programme Guide 2026 (PDF ES): `https://erasmus-plus.ec.europa.eu/sites/default/files/2025-11/programme-guide-2026_es.pdf`
-
-#### B) Anadir una nueva seccion completa sobre European Youth Together (KA3):
+**1. `src/components/DashboardChat.tsx`** - Actualizar los arrays FAQ_ES y FAQ_EN:
 
 ```text
-## EUROPEAN YOUTH TOGETHER 2026 (KA3) - KEY INFORMATION
+Antes:
+- '¿Cuáles son los plazos 2025?'
+- 'What are the 2025 deadlines?'
 
-### Call Reference
-- Topic ID: ERASMUS-YOUTH-2026-YOUTH-TOG
-- Call page: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG
-- Deadline: 26 February 2026
-- Action type: KA3 - Support for Policy Reform
-
-### What is European Youth Together?
-European Youth Together projects aim to create cooperation networks enabling young people 
-across Europe to set up joint projects, organise exchanges and promote trainings (e.g. for 
-youth leaders/youth workers) through both physical and online activities. The action supports 
-transnational partnerships for youth organisations at both grassroots and large-scale level, 
-aiming to reinforce the European dimension of their activities.
-
-### Eligibility:
-- EU Member States and third countries associated to the Programme (North Macedonia, Serbia, 
-  Iceland, Norway, Liechtenstein, Turkiye)
-- Applicants must be youth organisations (NGOs, public bodies, etc.)
-- Transnational partnerships required
-
-### Key links:
-- Full call details: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG
-- Programme Guide 2026 (reference document): https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026
+Despues:
+FAQ_ES = [
+  '¿Qué es European Youth Together 2026?',
+  '¿Cuál es el plazo de la convocatoria 2026?',
+  '¿Qué documentos necesito?',
+  '¿Quién puede participar en Youth Together?',
+]
+FAQ_EN = [
+  'What is European Youth Together 2026?',
+  'What is the 2026 call deadline?',
+  'What documents do I need?',
+  'Who can participate in Youth Together?',
+]
 ```
+
+**2. `src/components/ErasmusChat.tsx`** - Actualizar los arrays FAQ_ES y FAQ_EN:
+
+```text
+FAQ_ES = [
+  '¿Cómo registro mi organización y obtengo el PIC?',
+  '¿Qué documentos necesito para la propuesta?',
+  '¿Cómo funciona el presupuesto Lump Sum?',
+  '¿Dónde descargo el Legal Entity Form?',
+  '¿Cuál es el plazo de European Youth Together 2026?',
+  '¿Cómo se firma el mandato?',
+]
+FAQ_EN = [
+  'How do I register my organisation and get a PIC?',
+  'What documents do I need for the proposal?',
+  'How does the Lump Sum budget work?',
+  'Where do I download the Legal Entity Form?',
+  'What is the European Youth Together 2026 deadline?',
+  'How do I sign the mandate?',
+]
+```
+
+**3. `src/i18n/es.ts`** - Actualizar textos del chat flotante (lineas 117-122):
+
+```text
+chat.subtitle: 'Consultas sobre European Youth Together 2026'
+chat.welcome: '¡Hola! Puedo ayudarte con dudas sobre la convocatoria European Youth Together 2026...'
+```
+
+**4. `src/i18n/en.ts`** - Actualizar textos equivalentes en ingles
 
 ### Archivos a modificar
 
 | Archivo | Cambio |
 |---------|--------|
-| `supabase/functions/erasmus-chat/index.ts` | Anadir informacion de Youth Together 2026 y Programme Guide 2026 al system prompt |
-
-### Nota tecnica
-
-Solo se modifica el system prompt (constante de texto). No hay cambios en la logica de la funcion ni en el frontend. La edge function se redesplegara automaticamente.
-
+| `src/components/DashboardChat.tsx` | FAQ chips enfocados a Youth Together 2026 |
+| `src/components/ErasmusChat.tsx` | FAQ chips actualizados de 2025 a 2026 |
+| `src/i18n/es.ts` | Textos del chat flotante actualizados |
+| `src/i18n/en.ts` | Textos del chat flotante actualizados |
