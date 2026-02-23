@@ -24,7 +24,7 @@ const CommonFolder = () => {
 
       <div className="space-y-3">
         {commonDocuments.map((def) => (
-          <DocumentChecklist key={def.key} definition={def} document={getDoc(def.key)} participantId={null} />
+          <DocumentChecklist key={def.key} definition={def} documents={getDocs(def.key)} participantId={null} />
         ))}
       </div>
     </div>
