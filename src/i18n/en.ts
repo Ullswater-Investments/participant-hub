@@ -37,6 +37,10 @@ export const en = {
     commonFolderDesc: 'Shared consortium documents',
     guidesTitle: 'Guides & information',
     guidesDesc: 'Instructions and useful resources',
+    chatTitle: 'Erasmus+ KA3 Assistant',
+    chatSubtitle: 'Ask about the Erasmus+ KA3 programme',
+    chatWelcome: 'Hi! I can help you with Erasmus+ KA3 questions. Choose a topic or type your question.',
+    chatPlaceholder: 'Type your Erasmus+ KA3 question...',
   },
   documents: {
     pending: 'Pending',

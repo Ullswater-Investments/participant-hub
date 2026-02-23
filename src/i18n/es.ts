@@ -37,6 +37,10 @@ export const es = {
     commonFolderDesc: 'Documentos compartidos del consorcio',
     guidesTitle: 'Guías e información',
     guidesDesc: 'Instrucciones y recursos útiles',
+    chatTitle: 'Asistente Erasmus+ KA3',
+    chatSubtitle: 'Pregunta sobre el programa Erasmus+ KA3',
+    chatWelcome: '¡Hola! Puedo ayudarte con dudas sobre Erasmus+ KA3. Elige un tema o escribe tu pregunta.',
+    chatPlaceholder: 'Escribe tu pregunta sobre Erasmus+ KA3...',
   },
   documents: {
     pending: 'Pendiente',
