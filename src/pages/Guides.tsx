@@ -2,21 +2,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExternalLink, BookOpen, Globe, FileText, Calculator, CheckSquare } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const guideIcons = [Globe, FileText, Calculator, CheckSquare];
+const guideIcons = [Globe, FileText, Calculator, CheckSquare, BookOpen];
 
 const guideLinks = [
   'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register',
   'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register',
   undefined,
   undefined,
+  'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG',
 ];
 
 const usefulLinkUrls = [
   'https://ec.europa.eu/info/funding-tenders/opportunities/portal',
-  'https://erasmus-plus.ec.europa.eu/programme-guide/erasmusplus-programme-guide',
+  'https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026',
   'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register',
   'https://www.sepie.es/',
-  'https://erasmus-plus.ec.europa.eu/resources-and-tools',
+  'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG',
 ];
 
 const Guides = () => {
