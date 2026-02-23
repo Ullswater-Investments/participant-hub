@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { Users, FolderOpen, CheckCircle2, Clock, Upload } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
+import { DeadlineCountdown } from '@/components/DeadlineCountdown';
 
 const participants = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
