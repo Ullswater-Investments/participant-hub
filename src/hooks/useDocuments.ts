@@ -91,6 +91,27 @@ export function useUploadDocument() {
   });
 }
 
+export function useDeleteDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ documentId, filePath }: { documentId: string; filePath: string | null }) => {
+      if (filePath) {
+        await supabase.storage.from('documents').remove([filePath]);
+      }
+      const { error } = await supabase.from('documents').delete().eq('id', documentId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      toast.success('Documento eliminado correctamente');
+    },
+    onError: (error) => {
+      toast.error('Error al eliminar el documento: ' + error.message);
+    },
+  });
+}
+
 export function useUpdateDocumentNotes() {
   const queryClient = useQueryClient();
 
