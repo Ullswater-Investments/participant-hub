@@ -1,37 +1,21 @@
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarHeader, SidebarFooter,
 } from '@/components/ui/sidebar';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import {
-  LayoutDashboard,
-  Users,
-  FolderOpen,
-  BookOpen,
-  LogOut,
-  GraduationCap,
-} from 'lucide-react';
+import { LayoutDashboard, Users, FolderOpen, BookOpen, LogOut, GraduationCap } from 'lucide-react';
 
 const participants = [
-  { id: 1, name: 'Participante 1' },
-  { id: 2, name: 'Participante 2' },
-  { id: 3, name: 'Participante 3' },
-  { id: 4, name: 'Participante 4' },
-  { id: 5, name: 'Participante 5' },
+  { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
 ];
 
 export function AppSidebar() {
   const { logout } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <Sidebar className="border-r-0">
@@ -42,9 +26,9 @@ export function AppSidebar() {
           </div>
           <div>
             <h2 className="font-semibold text-sidebar-foreground text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Portal Erasmus+
+              {t('sidebar.portalTitle') as string}
             </h2>
-            <p className="text-xs text-sidebar-foreground/70">Gestión documental</p>
+            <p className="text-xs text-sidebar-foreground/70">{t('sidebar.portalSubtitle') as string}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -52,7 +36,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/60 text-xs uppercase tracking-wider">
-            General
+            {t('sidebar.general') as string}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -60,7 +44,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink to="/" end activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                     <LayoutDashboard className="w-4 h-4" />
-                    <span>Panel principal</span>
+                    <span>{t('sidebar.dashboard') as string}</span>
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -70,7 +54,7 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/60 text-xs uppercase tracking-wider">
-            Participantes
+            {t('sidebar.participants') as string}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -79,7 +63,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink to={`/participante/${p.id}`} activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                       <Users className="w-4 h-4" />
-                      <span>{p.name}</span>
+                      <span>{t('sidebar.participant') as string} {p.id}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -90,7 +74,7 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/60 text-xs uppercase tracking-wider">
-            Consorcio
+            {t('sidebar.consortium') as string}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -98,7 +82,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink to="/comun" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                     <FolderOpen className="w-4 h-4" />
-                    <span>Carpeta común</span>
+                    <span>{t('sidebar.commonFolder') as string}</span>
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -106,7 +90,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink to="/guias" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                     <BookOpen className="w-4 h-4" />
-                    <span>Guías e información</span>
+                    <span>{t('sidebar.guides') as string}</span>
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -116,14 +100,10 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={logout}
-          className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-        >
+        <Button variant="ghost" size="sm" onClick={logout}
+          className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent">
           <LogOut className="w-4 h-4 mr-2" />
-          Cerrar sesión
+          {t('sidebar.logout') as string}
         </Button>
       </SidebarFooter>
     </Sidebar>
