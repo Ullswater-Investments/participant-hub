@@ -29,7 +29,11 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 relative">
+      <Button variant="ghost" size="sm" onClick={toggleLanguage} className="absolute top-4 right-4 gap-1.5 text-xs font-semibold">
+        <Globe className="w-4 h-4" />
+        {language === 'es' ? 'EN' : 'ES'}
+      </Button>
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center space-y-4 pb-2">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
