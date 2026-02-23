@@ -121,6 +121,14 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                       <Badge variant={doc.status === 'verified' ? 'default' : 'secondary'} className="text-[10px] shrink-0">
                         {doc.status === 'verified' ? '✓' : '↑'}
                       </Badge>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDelete(doc); }}
+                        disabled={deleteMutation.isPending}
+                        className="text-destructive hover:text-destructive/80 shrink-0 p-0.5 rounded hover:bg-destructive/10 transition-colors disabled:opacity-50"
+                        title="Eliminar archivo"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </li>
                   ))}
                 </ul>
