@@ -28,6 +28,7 @@ const Guides = () => {
     { titleKey: 'guides.guide2Title', stepsKey: 'guides.guide2Steps', link: guideLinks[1] },
     { titleKey: 'guides.guide3Title', stepsKey: 'guides.guide3Steps', link: guideLinks[2] },
     { titleKey: 'guides.guide4Title', stepsKey: 'guides.guide4Steps', link: guideLinks[3] },
+    { titleKey: 'guides.guide5Title', stepsKey: 'guides.guide5Steps', link: guideLinks[4] },
   ];
 
   const linkKeys = ['guides.link1', 'guides.link2', 'guides.link3', 'guides.link4', 'guides.link5'];
