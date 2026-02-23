@@ -14,7 +14,7 @@ const FAQ_ES = [
   '¿Qué documentos necesito para la propuesta?',
   '¿Cómo funciona el presupuesto Lump Sum?',
   '¿Dónde descargo el Legal Entity Form?',
-  '¿Cuáles son los plazos de la convocatoria 2025?',
+  '¿Cuál es el plazo de European Youth Together 2026?',
   '¿Cómo se firma el mandato?',
 ];
 
@@ -23,7 +23,7 @@ const FAQ_EN = [
   'What documents do I need for the proposal?',
   'How does the Lump Sum budget work?',
   'Where do I download the Legal Entity Form?',
-  'What are the 2025 call deadlines?',
+  'What is the European Youth Together 2026 deadline?',
   'How do I sign the mandate?',
 ];
 
