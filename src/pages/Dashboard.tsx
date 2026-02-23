@@ -34,7 +34,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-5xl">
+    <div className="space-y-6 sm:space-y-8 max-w-5xl pb-16 sm:pb-0">
       <DashboardChat />
       <div className="flex items-center justify-between">
         <div>
