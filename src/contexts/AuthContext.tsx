@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (password: string): Promise<boolean> => {
     // For simplicity, using a hardcoded password. Can be moved to DB later.
-    if (password === 'erasmus2025') {
+    if (password === 'erasmus2026') {
       setIsAuthenticated(true);
       sessionStorage.setItem('erasmus_auth', 'true');
       return true;
