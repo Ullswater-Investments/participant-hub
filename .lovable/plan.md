@@ -1,32 +1,41 @@
 
-## Anadir boton de validar documentos
 
-### Objetivo
-Agregar un boton de validacion (check/tick) junto al boton de borrar en cada archivo subido. Al validar, el estado del documento cambia a "verified" y se refleja automaticamente en el contador de "Docs verificados" del panel principal.
+## Mostrar contadores de documentos comunes en el Dashboard
+
+### Problema actual
+- Los contadores globales ("Uploaded docs" y "Verified docs") solo cuentan documentos de participantes (1-5), ignorando los documentos de la carpeta comun.
+- La tarjeta "Carpeta comun" no muestra ningun contador de documentos subidos/verificados.
 
 ### Cambios necesarios
 
-#### 1. `src/hooks/useDocuments.ts` - Nueva mutacion `useVerifyDocument`
-- Crear una funcion que actualice el campo `status` a `'verified'` en la tabla `documents` usando `supabase.from('documents').update({ status: 'verified' }).eq('id', documentId)`
-- Invalidar la query cache tras la actualizacion
-- Mostrar toast de confirmacion
+#### `src/pages/Dashboard.tsx`
 
-#### 2. `src/components/DocumentChecklist.tsx` - Anadir boton de validar
-- Importar un icono adecuado (por ejemplo `CheckCircle2` que ya esta importado)
-- Anadir un boton con icono de check junto al boton de borrar en cada archivo de la lista
-- El boton solo aparece si el documento aun no esta verificado (status !== 'verified')
-- Al hacer clic, llama a la mutacion `useVerifyDocument`
-- Deshabilitar el boton mientras se ejecuta la mutacion
+**1. Incluir documentos comunes en los contadores globales**
+- Calcular estadisticas de documentos comunes (category === 'common') a partir de `allDocs`
+- Sumar estos valores a los contadores de "Uploaded docs" y "Verified docs" del panel superior
 
-### Flujo de datos
-- Al validar un documento, su status pasa de `'uploaded'` a `'verified'`
-- El badge del documento individual cambia de flecha (uploaded) a check (verified)
-- El badge general del DocumentChecklist cambia a "Verificado" cuando al menos un archivo esta verificado
-- El contador "Docs verificados" en el Dashboard se actualiza automaticamente porque usa la misma query de documentos
+**2. Mostrar contadores en la tarjeta "Carpeta comun"**
+- Anadir debajo del subtitulo de "Carpeta comun" indicadores con el numero de documentos subidos y verificados, usando el mismo estilo de colores del resto del dashboard (naranja para subidos, verde para verificados)
 
 ### Detalle tecnico
 
-| Archivo | Cambio |
-|---------|--------|
-| `useDocuments.ts` | Nueva funcion `useVerifyDocument()` con mutacion para cambiar status a 'verified' |
-| `DocumentChecklist.tsx` | Boton check verde junto al boton de borrar, visible solo para docs no verificados |
+Se calcularan las estadisticas de documentos comunes filtrando `allDocs` por `category === 'common'`:
+
+```text
+commonUploaded = docs con status 'uploaded'
+commonVerified = docs con status 'verified'
+```
+
+Los contadores globales pasaran de:
+- `participants.reduce(...)` (solo participantes)
+- a `participants.reduce(...) + commonUploaded/commonVerified`
+
+La tarjeta "Carpeta comun" mostrara algo como:
+```text
+Carpeta comun
+Documentos compartidos del consorcio
+X subidos | Y verificados
+```
+
+Solo se modifica un archivo: `src/pages/Dashboard.tsx`.
+
