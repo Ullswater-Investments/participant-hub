@@ -127,7 +127,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                     <li key={doc.id} className="flex items-center gap-2 text-sm bg-muted/40 rounded-md px-2.5 py-1.5">
                       <FileText className="w-3.5 h-3.5 text-primary shrink-0" />
                       <button
-                        onClick={() => doc.file_path && handleDownload(doc.file_path)}
+                        onClick={() => doc.file_path && handleDownload(doc.file_path, doc.file_name ?? undefined)}
                         className="text-left truncate flex-1 text-primary hover:underline text-xs sm:text-sm"
                       >
                         {doc.file_name || doc.document_key}
