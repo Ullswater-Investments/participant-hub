@@ -33,6 +33,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl">
+      <DashboardChat />
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
