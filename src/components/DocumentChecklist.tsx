@@ -50,10 +50,23 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
     e.target.value = '';
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data } = await supabase.storage.from('documents').createSignedUrl(filePath, 3600);
-    if (data?.signedUrl) {
-      window.open(data.signedUrl, '_blank');
+  const handleDownload = async (filePath: string, fileName?: string) => {
+    const { data } = supabase.storage.from('documents').getPublicUrl(filePath);
+    if (data?.publicUrl) {
+      try {
+        const response = await fetch(data.publicUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName || filePath.split('/').pop() || 'documento';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } catch {
+        window.open(data.publicUrl, '_blank');
+      }
     }
   };
 
@@ -114,7 +127,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                     <li key={doc.id} className="flex items-center gap-2 text-sm bg-muted/40 rounded-md px-2.5 py-1.5">
                       <FileText className="w-3.5 h-3.5 text-primary shrink-0" />
                       <button
-                        onClick={() => doc.file_path && handleDownload(doc.file_path)}
+                        onClick={() => doc.file_path && handleDownload(doc.file_path, doc.file_name ?? undefined)}
                         className="text-left truncate flex-1 text-primary hover:underline text-xs sm:text-sm"
                       >
                         {doc.file_name || doc.document_key}
@@ -124,7 +137,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                       </Badge>
                       {doc.file_path && (
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleDownload(doc.file_path!); }}
+                          onClick={(e) => { e.stopPropagation(); handleDownload(doc.file_path!, doc.file_name ?? undefined); }}
                           className="text-primary hover:text-primary/80 shrink-0 p-0.5 rounded hover:bg-primary/10 transition-colors"
                           title="Descargar archivo"
                         >
