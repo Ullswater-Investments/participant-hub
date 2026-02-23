@@ -10,8 +10,7 @@ const SYSTEM_PROMPT = `You are an expert Erasmus+ KA3 assistant embedded in a co
 
 CRITICAL RULES:
 1. ALWAYS include relevant official links in your answers.
-2. Answer in the SAME LANGUAGE as the user's message (Spanish or English).
-3. Be concise but thorough. Use bullet points and numbered steps when helpful.
+2. Be concise but thorough. Use bullet points and numbered steps when helpful.
 4. If you're unsure about something, say so and direct the user to the official source.
 5. If the user asks a question that is NOT related to the Erasmus+ programme (KA3 or general Erasmus+ topics), you MUST decline politely and explain that you can only answer questions about Erasmus+ KA3. Do NOT answer off-topic questions.
 
@@ -126,7 +125,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: SYSTEM_PROMPT + langInstruction },
+            { role: "system", content: langInstruction + "\n\n" + SYSTEM_PROMPT },
             ...messages,
           ],
           stream: true,
@@ -137,20 +136,20 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Demasiadas solicitudes. Inténtalo de nuevo en unos segundos." }),
+          JSON.stringify({ error: language === 'en' ? "Too many requests. Try again in a few seconds." : "Demasiadas solicitudes. Inténtalo de nuevo en unos segundos." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Créditos de IA agotados. Contacta al administrador." }),
+          JSON.stringify({ error: language === 'en' ? "AI credits exhausted. Contact the administrator." : "Créditos de IA agotados. Contacta al administrador." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const t = await response.text();
       console.error("AI gateway error:", response.status, t);
       return new Response(
-        JSON.stringify({ error: "Error del servicio de IA" }),
+        JSON.stringify({ error: language === 'en' ? "AI service error" : "Error del servicio de IA" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
