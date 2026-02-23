@@ -75,7 +75,7 @@ const Dashboard = () => {
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-lg sm:text-2xl font-bold">
-                  {participants.reduce((sum, p) => sum + getParticipantStats(p.id).uploaded, 0)}
+                  {participants.reduce((sum, p) => sum + getParticipantStats(p.id).uploaded, 0) + commonUploaded}
                 </p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground leading-tight">{t('dashboard.uploadedDocs') as string}</p>
               </div>
