@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info } from 'lucide-react';
+import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2 } from 'lucide-react';
 import { DocumentDefinition } from '@/data/documentDefinitions';
 import { Document, useUploadDocument, useUpdateDocumentNotes } from '@/hooks/useDocuments';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,19 +12,19 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Props {
   definition: DocumentDefinition;
-  document?: Document;
+  documents: Document[];
   participantId: number | null;
 }
 
-export function DocumentChecklist({ definition, document, participantId }: Props) {
+export function DocumentChecklist({ definition, documents, participantId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [notes, setNotes] = useState(document?.notes || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = useUploadDocument();
-  const notesMutation = useUpdateDocumentNotes();
   const { t, tDoc } = useLanguage();
 
-  const status = document?.status || 'pending';
+  const hasFiles = documents.length > 0;
+  const hasVerified = documents.some((d) => d.status === 'verified');
+  const status = hasVerified ? 'verified' : hasFiles ? 'uploaded' : 'pending';
 
   const statusConfig: Record<string, { label: string; icon: React.ReactNode; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
     pending: { label: t('documents.pending') as string, icon: <Clock className="w-3 h-3" />, variant: 'destructive' },
@@ -35,26 +35,21 @@ export function DocumentChecklist({ definition, document, participantId }: Props
   const config = statusConfig[status];
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const fileList = e.target.files;
+    if (!fileList || fileList.length === 0) return;
     uploadMutation.mutate({
-      file,
+      files: Array.from(fileList),
       participantId,
       documentKey: definition.key,
       documentName: tDoc(definition.name),
       category: definition.category,
     });
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
   };
 
-  const handleSaveNotes = () => {
-    if (document) {
-      notesMutation.mutate({ documentId: document.id, notes });
-    }
-  };
-
-  const handleDownload = async () => {
-    if (!document?.file_path) return;
-    const { data, error } = await supabase.storage.from('documents').createSignedUrl(document.file_path, 3600);
+  const handleDownload = async (filePath: string) => {
+    const { data } = await supabase.storage.from('documents').createSignedUrl(filePath, 3600);
     if (data?.signedUrl) {
       window.open(data.signedUrl, '_blank');
     }
@@ -73,6 +68,9 @@ export function DocumentChecklist({ definition, document, participantId }: Props
                     {config.icon}
                     {config.label}
                   </Badge>
+                  {documents.length > 0 && (
+                    <span className="text-xs text-muted-foreground">({documents.length} archivo{documents.length !== 1 ? 's' : ''})</span>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{tDoc(definition.description)}</p>
               </div>
@@ -90,34 +88,38 @@ export function DocumentChecklist({ definition, document, participantId }: Props
               </div>
             </div>
 
-            <div className="flex items-center gap-3 flex-wrap">
+            {/* Upload button */}
+            <div>
               <input type="file" ref={fileInputRef} onChange={handleFileUpload}
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" className="hidden" />
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" className="hidden" multiple />
               <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploadMutation.isPending}>
                 <Upload className="w-4 h-4 mr-1" />
                 {uploadMutation.isPending ? t('documents.uploading') as string : t('documents.uploadFile') as string}
               </Button>
-              {document?.file_name && (
-                <Button size="sm" variant="ghost" onClick={handleDownload}>
-                  <ExternalLink className="w-4 h-4 mr-1" />
-                  {document.file_name}
-                </Button>
-              )}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-                <MessageSquare className="w-3 h-3" />
-                {t('documents.notesLabel') as string}
-              </label>
-              <Textarea value={notes} onChange={(e) => setNotes(e.target.value)}
-                placeholder={t('documents.notesPlaceholder') as string} className="text-sm min-h-[60px]" />
-              {notes !== (document?.notes || '') && (
-                <Button size="sm" variant="secondary" onClick={handleSaveNotes}>
-                  {t('documents.saveNotes') as string}
-                </Button>
-              )}
-            </div>
+            {/* List of uploaded files */}
+            {documents.length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground">Archivos subidos:</p>
+                <ul className="space-y-1">
+                  {documents.map((doc) => (
+                    <li key={doc.id} className="flex items-center gap-2 text-sm bg-muted/40 rounded-md px-2.5 py-1.5">
+                      <FileText className="w-3.5 h-3.5 text-primary shrink-0" />
+                      <button
+                        onClick={() => doc.file_path && handleDownload(doc.file_path)}
+                        className="text-left truncate flex-1 text-primary hover:underline text-xs sm:text-sm"
+                      >
+                        {doc.file_name || doc.document_key}
+                      </button>
+                      <Badge variant={doc.status === 'verified' ? 'default' : 'secondary'} className="text-[10px] shrink-0">
+                        {doc.status === 'verified' ? '✓' : '↑'}
+                      </Badge>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </CollapsibleContent>
       </Collapsible>

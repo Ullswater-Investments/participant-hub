@@ -47,49 +47,28 @@ export function useUploadDocument() {
 
   return useMutation({
     mutationFn: async ({
-      file,
+      files,
       participantId,
       documentKey,
       documentName,
       category,
     }: {
-      file: File;
+      files: File[];
       participantId: number | null;
       documentKey: string;
       documentName: string;
       category: string;
     }) => {
-      const folder = participantId ? `participant-${participantId}` : 'common';
-      const filePath = `${folder}/${documentKey}/${Date.now()}-${file.name}`;
+      for (const file of files) {
+        const folder = participantId ? `participant-${participantId}` : 'common';
+        const filePath = `${folder}/${documentKey}/${Date.now()}-${file.name}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('documents')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      // Check if document record exists
-      let query = supabase
-        .from('documents')
-        .select('id')
-        .eq('document_key', documentKey)
-        .eq('category', category);
-
-      if (participantId) {
-        query = query.eq('participant_id', participantId);
-      } else {
-        query = query.is('participant_id', null);
-      }
-
-      const { data: existing } = await query.maybeSingle();
-
-      if (existing) {
-        const { error } = await supabase
+        const { error: uploadError } = await supabase.storage
           .from('documents')
-          .update({ file_path: filePath, file_name: file.name, status: 'uploaded' })
-          .eq('id', existing.id);
-        if (error) throw error;
-      } else {
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
         const { error } = await supabase.from('documents').insert({
           participant_id: participantId,
           document_key: documentKey,
@@ -104,7 +83,7 @@ export function useUploadDocument() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
-      toast.success('Documento subido correctamente');
+      toast.success('Documento(s) subido(s) correctamente');
     },
     onError: (error) => {
       toast.error('Error al subir el documento: ' + error.message);

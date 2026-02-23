@@ -43,7 +43,7 @@ export const en = {
     uploaded: 'Uploaded',
     verified: 'Verified',
     uploading: 'Uploading...',
-    uploadFile: 'Upload file',
+    uploadFile: 'Upload files',
     notesLabel: 'Notes / Comments',
     notesPlaceholder: 'Add notes or comments about this document...',
     saveNotes: 'Save notes',

@@ -17,10 +17,11 @@ const ParticipantFolder = () => {
   const techDocs = participantDocuments.filter((d) => d.category === 'technical');
 
   const total = participantDocuments.length;
-  const completed = docs.filter((d) => d.status === 'uploaded' || d.status === 'verified').length;
+  const completedKeys = new Set(docs.filter((d) => d.status === 'uploaded' || d.status === 'verified').map((d) => d.document_key));
+  const completed = participantDocuments.filter((def) => completedKeys.has(def.key)).length;
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-  const getDoc = (key: string) => docs.find((d) => d.document_key === key);
+  const getDocs = (key: string) => docs.filter((d) => d.document_key === key);
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl">
@@ -51,13 +52,13 @@ const ParticipantFolder = () => {
 
         <TabsContent value="administrative" className="space-y-3">
           {adminDocs.map((def) => (
-            <DocumentChecklist key={def.key} definition={def} document={getDoc(def.key)} participantId={participantId} />
+            <DocumentChecklist key={def.key} definition={def} documents={getDocs(def.key)} participantId={participantId} />
           ))}
         </TabsContent>
 
         <TabsContent value="technical" className="space-y-3">
           {techDocs.map((def) => (
-            <DocumentChecklist key={def.key} definition={def} document={getDoc(def.key)} participantId={participantId} />
+            <DocumentChecklist key={def.key} definition={def} documents={getDocs(def.key)} participantId={participantId} />
           ))}
         </TabsContent>
       </Tabs>
