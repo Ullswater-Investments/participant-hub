@@ -24,6 +24,10 @@ const Dashboard = () => {
   const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
 
+  const commonDocs = allDocs.filter((d) => d.category === 'common');
+  const commonUploaded = commonDocs.filter((d) => d.status === 'uploaded').length;
+  const commonVerified = commonDocs.filter((d) => d.status === 'verified').length;
+
   const getParticipantStats = (pid: number) => {
     const docs = allDocs.filter((d) => d.participant_id === pid);
     const uploaded = docs.filter((d) => d.status === 'uploaded').length;
