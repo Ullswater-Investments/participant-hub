@@ -1,31 +1,14 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ReactMarkdown from 'react-markdown';
+import { SUGGESTIONS_ES, SUGGESTIONS_EN, pickSuggestions } from '@/data/chatSuggestions';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/erasmus-chat`;
-
-const FAQ_ES = [
-  '¿Cómo registro mi organización y obtengo el PIC?',
-  '¿Qué documentos necesito para la propuesta?',
-  '¿Cómo funciona el presupuesto Lump Sum?',
-  '¿Dónde descargo el Legal Entity Form?',
-  '¿Cuál es el plazo de European Youth Together 2026?',
-  '¿Cómo se firma el mandato?',
-];
-
-const FAQ_EN = [
-  'How do I register my organisation and get a PIC?',
-  'What documents do I need for the proposal?',
-  'How does the Lump Sum budget work?',
-  'Where do I download the Legal Entity Form?',
-  'What is the European Youth Together 2026 deadline?',
-  'How do I sign the mandate?',
-];
 
 export function ErasmusChat() {
   const { language, t } = useLanguage();
@@ -36,7 +19,21 @@ export function ErasmusChat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const faqs = language === 'es' ? FAQ_ES : FAQ_EN;
+  const pool = language === 'es' ? SUGGESTIONS_ES : SUGGESTIONS_EN;
+
+  const userMessages = useMemo(
+    () => messages.filter(m => m.role === 'user').map(m => m.content),
+    [messages]
+  );
+
+  const suggestions = useMemo(
+    () => pickSuggestions(pool, userMessages, 4),
+    [pool, userMessages]
+  );
+
+  const showSuggestions =
+    !isLoading &&
+    (messages.length === 0 || messages[messages.length - 1]?.role === 'assistant');
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -156,20 +153,7 @@ export function ErasmusChat() {
           {/* Messages */}
           <ScrollArea className="flex-1 p-3" ref={scrollRef as any}>
             {messages.length === 0 && (
-              <div className="space-y-3">
-                <p className="text-xs text-muted-foreground text-center mt-2 mb-3">{t('chat.welcome') as string}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {faqs.map((q, i) => (
-                    <button
-                      key={i}
-                      onClick={() => sendMessage(q)}
-                      className="text-[11px] px-2.5 py-1.5 rounded-full border bg-muted hover:bg-accent transition-colors text-left leading-tight"
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <p className="text-xs text-muted-foreground text-center mt-2 mb-3">{t('chat.welcome') as string}</p>
             )}
             <div className="space-y-3">
               {messages.map((m, i) => (
@@ -197,6 +181,21 @@ export function ErasmusChat() {
                 </div>
               )}
             </div>
+
+            {/* Suggestion chips */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {suggestions.map((q, i) => (
+                  <button
+                    key={i}
+                    onClick={() => sendMessage(q)}
+                    className="text-[11px] px-2.5 py-1.5 rounded-full border bg-muted hover:bg-accent transition-colors text-left leading-tight"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
           </ScrollArea>
 
           {/* Input */}
