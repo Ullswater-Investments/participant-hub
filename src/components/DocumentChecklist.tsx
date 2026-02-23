@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2 } from 'lucide-react';
+import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2, Download } from 'lucide-react';
 import { DocumentDefinition } from '@/data/documentDefinitions';
 import { Document, useUploadDocument, useDeleteDocument, useVerifyDocument } from '@/hooks/useDocuments';
 import { supabase } from '@/integrations/supabase/client';
