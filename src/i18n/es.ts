@@ -116,8 +116,8 @@ export const es = {
   },
   chat: {
     title: 'Asistente Erasmus+',
-    subtitle: 'Consultas sobre el programa KA220',
-    welcome: '¡Hola! Puedo ayudarte con dudas sobre Erasmus+ KA220. Elige un tema o escribe tu pregunta.',
+    subtitle: 'Consultas sobre European Youth Together 2026',
+    welcome: '¡Hola! Puedo ayudarte con dudas sobre la convocatoria European Youth Together 2026. Elige un tema o escribe tu pregunta.',
     placeholder: 'Escribe tu pregunta...',
   },
   notFound: {

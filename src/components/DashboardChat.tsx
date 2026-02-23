@@ -11,17 +11,17 @@ type Msg = { role: 'user' | 'assistant'; content: string };
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/erasmus-chat`;
 
 const FAQ_ES = [
-  '¿Qué es Erasmus+ KA3?',
-  '¿Cómo presento una propuesta KA3?',
+  '¿Qué es European Youth Together 2026?',
+  '¿Cuál es el plazo de la convocatoria 2026?',
   '¿Qué documentos necesito?',
-  '¿Cuáles son los plazos 2025?',
+  '¿Quién puede participar en Youth Together?',
 ];
 
 const FAQ_EN = [
-  'What is Erasmus+ KA3?',
-  'How do I submit a KA3 proposal?',
+  'What is European Youth Together 2026?',
+  'What is the 2026 call deadline?',
   'What documents do I need?',
-  'What are the 2025 deadlines?',
+  'Who can participate in Youth Together?',
 ];
 
 export function DashboardChat() {
