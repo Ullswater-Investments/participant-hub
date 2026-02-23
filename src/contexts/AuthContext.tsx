@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -14,13 +15,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const login = async (password: string): Promise<boolean> => {
-    // For simplicity, using a hardcoded password. Can be moved to DB later.
-    if (password === 'erasmus2026') {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('erasmus_auth', 'true');
-      return true;
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-password', {
+        body: { password },
+      });
+
+      if (error) {
+        console.error('Login error:', error);
+        return false;
+      }
+
+      if (data?.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('erasmus_auth', 'true');
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      console.error('Login error:', e);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
