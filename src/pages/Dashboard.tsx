@@ -7,7 +7,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
-import { DeadlineCountdown } from '@/components/DeadlineCountdown';
 import { exportProgressPDF } from '@/utils/exportPDF';
 
 const participants = [
@@ -36,10 +35,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <DeadlineCountdown />
-        <DashboardChat />
-      </div>
+      <DashboardChat />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
