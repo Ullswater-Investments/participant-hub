@@ -1,6 +1,6 @@
 export const es = {
   login: {
-    title: 'Portal Erasmus+',
+    title: 'YOUTH AGENDA',
     description: 'Gestión de documentación del consorcio',
     passwordLabel: 'Contraseña del consorcio',
     placeholder: 'Introduce la contraseña compartida',
