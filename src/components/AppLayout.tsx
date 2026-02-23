@@ -27,6 +27,7 @@ export function AppLayout() {
           </div>
         </main>
       </div>
+      <ErasmusChat />
     </SidebarProvider>
   );
 }
