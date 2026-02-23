@@ -1,1 +1,4 @@
 project_id = "rktmbrecahsswjbxbofz"
+
+[functions.erasmus-chat]
+verify_jwt = false

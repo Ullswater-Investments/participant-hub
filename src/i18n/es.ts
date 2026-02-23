@@ -110,6 +110,12 @@ export const es = {
     link4: 'SEPIE (Agencia Nacional España)',
     link5: 'Plantillas oficiales Erasmus+',
   },
+  chat: {
+    title: 'Asistente Erasmus+',
+    subtitle: 'Consultas sobre el programa KA220',
+    welcome: '¡Hola! Puedo ayudarte con dudas sobre Erasmus+ KA220. Elige un tema o escribe tu pregunta.',
+    placeholder: 'Escribe tu pregunta...',
+  },
   notFound: {
     title: '404',
     message: '¡Página no encontrada!',

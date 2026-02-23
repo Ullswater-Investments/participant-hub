@@ -110,6 +110,12 @@ export const en = {
     link4: 'SEPIE (Spanish National Agency)',
     link5: 'Official Erasmus+ Templates',
   },
+  chat: {
+    title: 'Erasmus+ Assistant',
+    subtitle: 'Ask about the KA220 programme',
+    welcome: 'Hi! I can help you with Erasmus+ KA220 questions. Choose a topic or type your question.',
+    placeholder: 'Type your question...',
+  },
   notFound: {
     title: '404',
     message: 'Page not found!',
