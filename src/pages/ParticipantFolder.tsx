@@ -23,10 +23,10 @@ const ParticipantFolder = () => {
   const getDoc = (key: string) => docs.find((d) => d.document_key === key);
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-4 sm:space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-3xl font-bold">{t('participant.title') as string} {participantId}</h1>
-        <p className="text-muted-foreground mt-1">{t('participant.subtitle') as string}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('participant.title') as string} {participantId}</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('participant.subtitle') as string}</p>
       </div>
 
       <div className="space-y-2">
