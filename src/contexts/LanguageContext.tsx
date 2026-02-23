@@ -16,6 +16,14 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Fallback for HMR edge cases
+const fallbackValue: LanguageContextType = {
+  language: (localStorage.getItem('portal-language') as 'en' | 'es') || 'es',
+  toggleLanguage: () => {},
+  t: (key: string) => key,
+  tDoc: (field: { en: string; es: string }) => field.es,
+};
+
 function getNestedValue(obj: any, path: string): any {
   return path.split('.').reduce((acc, part) => acc?.[part], obj);
 }
