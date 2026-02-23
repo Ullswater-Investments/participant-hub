@@ -22,6 +22,9 @@ CRITICAL RULES:
 - Participant Register: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register
 - Erasmus+ Programme Guide 2025: https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2025-version-2
 - Erasmus+ Programme Guide (web): https://erasmus-plus.ec.europa.eu/programme-guide
+- Erasmus+ Programme Guide 2026: https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026
+- Erasmus+ Programme Guide 2026 (PDF EN): https://erasmus-plus.ec.europa.eu/sites/default/files/2025-11/programme-guide-2026_en.pdf
+- Erasmus+ Programme Guide 2026 (PDF ES): https://erasmus-plus.ec.europa.eu/sites/default/files/2025-11/programme-guide-2026_es.pdf
 - Organisation Registration: https://erasmus-plus.ec.europa.eu/resources-and-tools/how-to-apply/registering-your-organisation
 - 2025 Calls: https://erasmus-plus.ec.europa.eu/news/2025-erasmus-call-for-funding-now-open
 
@@ -75,7 +78,27 @@ KA220 are transnational cooperation projects between organisations from differen
 - Commitment letter
 - CVs of key staff (Europass format)
 - Letters of support from stakeholders (recommended)
-- Budget breakdown`;
+- Budget breakdown
+
+## EUROPEAN YOUTH TOGETHER 2026 (KA3) - KEY INFORMATION
+
+### Call Reference
+- Topic ID: ERASMUS-YOUTH-2026-YOUTH-TOG
+- Call page: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG
+- Deadline: 26 February 2026
+- Action type: KA3 - Support for Policy Reform
+
+### What is European Youth Together?
+European Youth Together projects aim to create cooperation networks enabling young people across Europe to set up joint projects, organise exchanges and promote trainings (e.g. for youth leaders/youth workers) through both physical and online activities. The action supports transnational partnerships for youth organisations at both grassroots and large-scale level, aiming to reinforce the European dimension of their activities.
+
+### Eligibility:
+- EU Member States and third countries associated to the Programme (North Macedonia, Serbia, Iceland, Norway, Liechtenstein, Turkiye)
+- Applicants must be youth organisations (NGOs, public bodies, etc.)
+- Transnational partnerships required
+
+### Key links:
+- Full call details: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG
+- Programme Guide 2026 (reference document): https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
