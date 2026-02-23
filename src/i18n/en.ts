@@ -41,6 +41,7 @@ export const en = {
     chatSubtitle: 'Ask about the Youth Together 2026 call',
     chatWelcome: 'Hi! I can help you with European Youth Together 2026 questions. Choose a topic or type your question.',
     chatPlaceholder: 'Type your Youth Together 2026 question...',
+    exportPdf: 'Export PDF',
   },
   countdown: {
     title: 'Call deadline',
