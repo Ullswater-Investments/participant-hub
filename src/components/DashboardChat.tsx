@@ -8,6 +8,44 @@ import ReactMarkdown from 'react-markdown';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
+function useTypewriter(text: string, speed = 18) {
+  const [displayed, setDisplayed] = useState('');
+  const indexRef = useRef(0);
+
+  useEffect(() => {
+    if (indexRef.current > text.length) {
+      indexRef.current = text.length;
+      setDisplayed(text);
+    }
+    if (indexRef.current >= text.length) {
+      setDisplayed(text);
+      return;
+    }
+    const timer = setInterval(() => {
+      indexRef.current = Math.min(indexRef.current + 1, text.length);
+      setDisplayed(text.slice(0, indexRef.current));
+      if (indexRef.current >= text.length) clearInterval(timer);
+    }, speed);
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return { displayed, isTyping: displayed.length < text.length };
+}
+
+function AssistantBubble({ content }: { content: string }) {
+  const { displayed, isTyping } = useTypewriter(content, 14);
+  return (
+    <div className="max-w-[85%] rounded-xl px-3 py-2 text-sm bg-muted">
+      <div className="prose prose-sm dark:prose-invert max-w-none [&_a]:text-primary [&_a]:underline [&_p]:my-1 [&_li]:my-0.5 [&_ul]:my-1 [&_ol]:my-1">
+        <ReactMarkdown>{displayed}</ReactMarkdown>
+      </div>
+      {isTyping && (
+        <span className="inline-block w-1.5 h-4 bg-foreground/60 animate-pulse ml-0.5 align-text-bottom rounded-sm" />
+      )}
+    </div>
+  );
+}
+
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/erasmus-chat`;
 
 const FAQ_ES = [
