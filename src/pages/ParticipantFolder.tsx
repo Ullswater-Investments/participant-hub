@@ -20,7 +20,7 @@ const ParticipantFolder = () => {
   const completed = docs.filter((d) => d.status === 'uploaded' || d.status === 'verified').length;
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-  const getDoc = (key: string) => docs.find((d) => d.document_key === key);
+  const getDocs = (key: string) => docs.filter((d) => d.document_key === key);
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl">
