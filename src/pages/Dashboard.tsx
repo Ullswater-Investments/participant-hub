@@ -5,6 +5,7 @@ import { participantDocuments } from '@/data/documentDefinitions';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { Users, FolderOpen, CheckCircle2, Clock, Upload } from 'lucide-react';
+import { DashboardChat } from '@/components/DashboardChat';
 
 const participants = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
@@ -32,6 +33,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl">
+      <DashboardChat />
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
