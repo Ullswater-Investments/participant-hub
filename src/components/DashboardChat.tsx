@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Bot, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ReactMarkdown from 'react-markdown';
+import { SUGGESTIONS_ES, SUGGESTIONS_EN, pickSuggestions } from '@/data/chatSuggestions';
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
@@ -48,20 +49,6 @@ function AssistantBubble({ content }: { content: string }) {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/erasmus-chat`;
 
-const FAQ_ES = [
-  '¿Qué es European Youth Together 2026?',
-  '¿Cuál es el plazo de la convocatoria 2026?',
-  '¿Qué documentos necesito?',
-  '¿Quién puede participar en Youth Together?',
-];
-
-const FAQ_EN = [
-  'What is European Youth Together 2026?',
-  'What is the 2026 call deadline?',
-  'What documents do I need?',
-  'Who can participate in Youth Together?',
-];
-
 export function DashboardChat() {
   const { language, t } = useLanguage();
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -69,7 +56,21 @@ export function DashboardChat() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const faqs = language === 'es' ? FAQ_ES : FAQ_EN;
+  const pool = language === 'es' ? SUGGESTIONS_ES : SUGGESTIONS_EN;
+
+  const userMessages = useMemo(
+    () => messages.filter(m => m.role === 'user').map(m => m.content),
+    [messages]
+  );
+
+  const suggestions = useMemo(
+    () => pickSuggestions(pool, userMessages, 4),
+    [pool, userMessages]
+  );
+
+  const showSuggestions =
+    !isLoading &&
+    (messages.length === 0 || messages[messages.length - 1]?.role === 'assistant');
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -168,22 +169,9 @@ export function DashboardChat() {
       {/* Messages area */}
       <ScrollArea className="h-[180px] sm:h-[260px] p-3" ref={scrollRef as any}>
         {messages.length === 0 && (
-          <div className="space-y-3">
-            <p className="text-xs text-muted-foreground text-center mt-2 mb-3">
-              {t('dashboard.chatWelcome') as string}
-            </p>
-            <div className="flex flex-wrap gap-1.5 justify-center">
-              {faqs.map((q, i) => (
-                <button
-                  key={i}
-                  onClick={() => sendMessage(q)}
-                  className="text-[11px] px-2.5 py-1.5 rounded-full border bg-muted hover:bg-accent transition-colors text-left leading-tight"
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
+          <p className="text-xs text-muted-foreground text-center mt-2 mb-3">
+            {t('dashboard.chatWelcome') as string}
+          </p>
         )}
         <div className="space-y-3">
           {messages.map((m, i) => (
@@ -205,6 +193,21 @@ export function DashboardChat() {
             </div>
           )}
         </div>
+
+        {/* Suggestion chips */}
+        {showSuggestions && suggestions.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 justify-center mt-3">
+            {suggestions.map((q, i) => (
+              <button
+                key={i}
+                onClick={() => sendMessage(q)}
+                className="text-[11px] px-2.5 py-1.5 rounded-full border bg-muted hover:bg-accent transition-colors text-left leading-tight"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
       </ScrollArea>
 
       {/* Input */}
