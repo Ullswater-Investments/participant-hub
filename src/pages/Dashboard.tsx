@@ -40,9 +40,15 @@ const Dashboard = () => {
         <DeadlineCountdown />
         <DashboardChat />
       </div>
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
+        </div>
+        <Button variant="outline" size="sm" className="gap-1.5 shrink-0" onClick={() => exportProgressPDF(allDocs, language)}>
+          <FileDown className="w-4 h-4" />
+          <span className="hidden sm:inline">{t('dashboard.exportPdf') as string}</span>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
