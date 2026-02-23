@@ -50,10 +50,23 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
     e.target.value = '';
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data } = await supabase.storage.from('documents').createSignedUrl(filePath, 3600);
-    if (data?.signedUrl) {
-      window.open(data.signedUrl, '_blank');
+  const handleDownload = async (filePath: string, fileName?: string) => {
+    const { data } = supabase.storage.from('documents').getPublicUrl(filePath);
+    if (data?.publicUrl) {
+      try {
+        const response = await fetch(data.publicUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName || filePath.split('/').pop() || 'documento';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } catch {
+        window.open(data.publicUrl, '_blank');
+      }
     }
   };
 
