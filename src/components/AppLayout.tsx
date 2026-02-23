@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
+import { ErasmusChat } from '@/components/ErasmusChat';
 
 export function AppLayout() {
   const { language, toggleLanguage, t } = useLanguage();
