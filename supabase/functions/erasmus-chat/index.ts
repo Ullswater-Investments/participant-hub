@@ -125,7 +125,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: SYSTEM_PROMPT + langInstruction },
+            { role: "system", content: langInstruction + "\n\n" + SYSTEM_PROMPT },
             ...messages,
           ],
           stream: true,
