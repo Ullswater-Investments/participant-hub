@@ -106,9 +106,14 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, language } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
+    // Enforce response language based on UI setting
+    const langInstruction = language === 'en'
+      ? "\n\nIMPORTANT: The user's interface is in ENGLISH. You MUST respond ONLY in English regardless of any previous messages or the language of your knowledge base."
+      : "\n\nIMPORTANTE: La interfaz del usuario está en ESPAÑOL. DEBES responder SOLO en español independientemente de mensajes anteriores o del idioma de tu base de conocimiento.";
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -121,7 +126,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: SYSTEM_PROMPT },
+            { role: "system", content: SYSTEM_PROMPT + langInstruction },
             ...messages,
           ],
           stream: true,
