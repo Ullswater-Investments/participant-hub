@@ -8,7 +8,7 @@ const CommonFolder = () => {
   const { data: docs = [] } = useDocuments();
   const { t } = useLanguage();
   const commonDocs = docs.filter((d) => d.category === 'common');
-  const getDoc = (key: string) => commonDocs.find((d) => d.document_key === key);
+  const getDocs = (key: string) => commonDocs.filter((d) => d.document_key === key);
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl">
