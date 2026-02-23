@@ -1,12 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 import { useAllDocuments } from '@/hooks/useDocuments';
 import { participantDocuments } from '@/data/documentDefinitions';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { Users, FolderOpen, CheckCircle2, Clock, Upload } from 'lucide-react';
+import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
 import { DeadlineCountdown } from '@/components/DeadlineCountdown';
+import { exportProgressPDF } from '@/utils/exportPDF';
 
 const participants = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
