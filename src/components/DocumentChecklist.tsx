@@ -20,6 +20,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = useUploadDocument();
+  const deleteMutation = useDeleteDocument();
   const { t, tDoc } = useLanguage();
 
   const hasFiles = documents.length > 0;
