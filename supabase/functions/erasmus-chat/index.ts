@@ -22,6 +22,9 @@ CRITICAL RULES:
 - Participant Register: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register
 - Erasmus+ Programme Guide 2025: https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2025-version-2
 - Erasmus+ Programme Guide (web): https://erasmus-plus.ec.europa.eu/programme-guide
+- Erasmus+ Programme Guide 2026: https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026
+- Erasmus+ Programme Guide 2026 (PDF EN): https://erasmus-plus.ec.europa.eu/sites/default/files/2025-11/programme-guide-2026_en.pdf
+- Erasmus+ Programme Guide 2026 (PDF ES): https://erasmus-plus.ec.europa.eu/sites/default/files/2025-11/programme-guide-2026_es.pdf
 - Organisation Registration: https://erasmus-plus.ec.europa.eu/resources-and-tools/how-to-apply/registering-your-organisation
 - 2025 Calls: https://erasmus-plus.ec.europa.eu/news/2025-erasmus-call-for-funding-now-open
 
