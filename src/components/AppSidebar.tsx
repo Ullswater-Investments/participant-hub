@@ -24,7 +24,7 @@ export function AppSidebar() {
         <div className="flex flex-col items-center gap-2">
           <img src={erasmusLogo} alt="Erasmus+ KA3" className="w-full max-w-[180px] object-contain" />
           <div className="text-center w-full">
-            <h2 className="font-semibold text-sidebar-foreground text-base" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2 className="font-extrabold text-sidebar-foreground text-xl tracking-wide uppercase" style={{ fontFamily: "'DM Sans', 'Arial Black', sans-serif" }}>
               {t('sidebar.portalTitle') as string}
             </h2>
             <p className="text-[10px] text-sidebar-foreground/70">{t('sidebar.portalSubtitle') as string}</p>
