@@ -42,6 +42,13 @@ export const es = {
     chatWelcome: '¡Hola! Puedo ayudarte con dudas sobre European Youth Together 2026. Elige un tema o escribe tu pregunta.',
     chatPlaceholder: 'Escribe tu pregunta sobre Youth Together 2026...',
   },
+  countdown: {
+    title: 'Plazo de la convocatoria',
+    expired: 'El plazo ha expirado',
+    days: 'Días',
+    hours: 'Horas',
+    minutes: 'Min',
+  },
   documents: {
     pending: 'Pendiente',
     uploaded: 'Subido',
