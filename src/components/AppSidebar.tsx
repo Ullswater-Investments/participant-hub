@@ -7,7 +7,8 @@ import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Users, FolderOpen, BookOpen, LogOut, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, Users, FolderOpen, BookOpen, LogOut } from 'lucide-react';
+import erasmusLogo from '@/assets/erasmus-logo.png';
 
 const participants = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
