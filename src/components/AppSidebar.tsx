@@ -22,9 +22,7 @@ export function AppSidebar() {
     <Sidebar className="border-r-0">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sidebar-primary flex items-center justify-center">
-            <GraduationCap className="w-5 h-5 text-sidebar-primary-foreground" />
-          </div>
+          <img src={erasmusLogo} alt="Erasmus+ KA3" className="w-10 h-10 rounded-xl object-contain" />
           <div>
             <h2 className="font-semibold text-sidebar-foreground text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
               {t('sidebar.portalTitle') as string}
