@@ -9,7 +9,7 @@ export const es = {
     error: 'Contraseña incorrecta. Contacta al coordinador del consorcio.',
   },
   sidebar: {
-    portalTitle: 'Portal Erasmus+',
+    portalTitle: 'YOUTH AGENDA',
     portalSubtitle: 'Gestión documental',
     general: 'General',
     dashboard: 'Panel principal',
