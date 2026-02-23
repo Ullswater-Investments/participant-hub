@@ -17,7 +17,8 @@ const ParticipantFolder = () => {
   const techDocs = participantDocuments.filter((d) => d.category === 'technical');
 
   const total = participantDocuments.length;
-  const completed = docs.filter((d) => d.status === 'uploaded' || d.status === 'verified').length;
+  const completedKeys = new Set(docs.filter((d) => d.status === 'uploaded' || d.status === 'verified').map((d) => d.document_key));
+  const completed = participantDocuments.filter((def) => completedKeys.has(def.key)).length;
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   const getDocs = (key: string) => docs.filter((d) => d.document_key === key);
