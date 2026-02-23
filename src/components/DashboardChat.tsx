@@ -188,19 +188,13 @@ export function DashboardChat() {
         <div className="space-y-3">
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
-                m.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted'
-              }`}>
-                {m.role === 'assistant' ? (
-                  <div className="prose prose-sm dark:prose-invert max-w-none [&_a]:text-primary [&_a]:underline [&_p]:my-1 [&_li]:my-0.5 [&_ul]:my-1 [&_ol]:my-1">
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
-                  </div>
-                ) : (
-                  m.content
-                )}
-              </div>
+              {m.role === 'assistant' ? (
+                <AssistantBubble content={m.content} />
+              ) : (
+                <div className="max-w-[85%] rounded-xl px-3 py-2 text-sm bg-primary text-primary-foreground">
+                  {m.content}
+                </div>
+              )}
             </div>
           ))}
           {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
