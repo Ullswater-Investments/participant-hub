@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2 } from 'lucide-react';
 import { DocumentDefinition } from '@/data/documentDefinitions';
-import { Document, useUploadDocument, useUpdateDocumentNotes } from '@/hooks/useDocuments';
+import { Document, useUploadDocument, useDeleteDocument } from '@/hooks/useDocuments';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -20,6 +20,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
   const [isOpen, setIsOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = useUploadDocument();
+  const deleteMutation = useDeleteDocument();
   const { t, tDoc } = useLanguage();
 
   const hasFiles = documents.length > 0;
@@ -53,6 +54,11 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
     if (data?.signedUrl) {
       window.open(data.signedUrl, '_blank');
     }
+  };
+
+  const handleDelete = (doc: Document) => {
+    if (!window.confirm(`¿Eliminar "${doc.file_name || doc.document_key}"?`)) return;
+    deleteMutation.mutate({ documentId: doc.id, filePath: doc.file_path });
   };
 
   return (
@@ -115,6 +121,14 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                       <Badge variant={doc.status === 'verified' ? 'default' : 'secondary'} className="text-[10px] shrink-0">
                         {doc.status === 'verified' ? '✓' : '↑'}
                       </Badge>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDelete(doc); }}
+                        disabled={deleteMutation.isPending}
+                        className="text-destructive hover:text-destructive/80 shrink-0 p-0.5 rounded hover:bg-destructive/10 transition-colors disabled:opacity-50"
+                        title="Eliminar archivo"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </li>
                   ))}
                 </ul>
