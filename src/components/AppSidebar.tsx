@@ -20,14 +20,14 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="border-r-0">
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
-          <img src={erasmusLogo} alt="Erasmus+ KA3" className="w-10 h-10 rounded-xl object-contain" />
-          <div>
-            <h2 className="font-semibold text-sidebar-foreground text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+      <SidebarHeader className="p-4 pb-2">
+        <div className="flex flex-col items-center gap-2">
+          <img src={erasmusLogo} alt="Erasmus+ KA3" className="w-full max-w-[180px] object-contain" />
+          <div className="text-center w-full">
+            <h2 className="font-semibold text-sidebar-foreground text-xs" style={{ fontFamily: "'Playfair Display', serif" }}>
               {t('sidebar.portalTitle') as string}
             </h2>
-            <p className="text-xs text-sidebar-foreground/70">{t('sidebar.portalSubtitle') as string}</p>
+            <p className="text-[10px] text-sidebar-foreground/70">{t('sidebar.portalSubtitle') as string}</p>
           </div>
         </div>
       </SidebarHeader>
