@@ -13,16 +13,16 @@ export function AppLayout() {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
-        <main className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b bg-card px-4 gap-4">
+        <main className="flex-1 flex flex-col min-w-0">
+          <header className="h-14 flex items-center border-b bg-card px-3 sm:px-4 gap-2 sm:gap-4 shrink-0">
             <SidebarTrigger />
-            <span className="text-sm text-muted-foreground flex-1">{t('header.subtitle') as string}</span>
-            <Button variant="ghost" size="sm" onClick={toggleLanguage} className="gap-1.5 text-xs font-semibold">
+            <span className="text-xs sm:text-sm text-muted-foreground flex-1 truncate">{t('header.subtitle') as string}</span>
+            <Button variant="ghost" size="sm" onClick={toggleLanguage} className="gap-1 sm:gap-1.5 text-xs font-semibold shrink-0">
               <Globe className="w-4 h-4" />
               {language === 'es' ? 'EN' : 'ES'}
             </Button>
           </header>
-          <div className="flex-1 p-6 overflow-auto">
+          <div className="flex-1 p-3 sm:p-6 overflow-auto">
             <Outlet />
           </div>
         </main>

@@ -31,10 +31,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl">
+    <div className="space-y-6 sm:space-y-8 max-w-5xl">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
-        <p className="text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -104,7 +104,7 @@ const Dashboard = () => {
                       <span className="text-sm font-semibold text-primary">{stats.percentage}%</span>
                     </div>
                     <Progress value={stats.percentage} className="h-2" />
-                    <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                    <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 text-xs text-muted-foreground">
                       <span className={statusColors.pending}>● {stats.pending} {t('dashboard.pending') as string}</span>
                       <span className={statusColors.uploaded}>● {stats.uploaded} {t('dashboard.uploaded') as string}</span>
                       <span className={statusColors.verified}>● {stats.verified} {t('dashboard.verified') as string}</span>

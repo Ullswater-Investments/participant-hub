@@ -140,9 +140,10 @@ export function ErasmusChat() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-4rem)] bg-card border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed z-50 bg-card border shadow-2xl flex flex-col overflow-hidden
+          bottom-0 right-0 w-full h-[100dvh] sm:bottom-6 sm:right-6 sm:w-[380px] sm:max-w-[calc(100vw-2rem)] sm:h-[520px] sm:max-h-[calc(100vh-4rem)] sm:rounded-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b bg-primary text-primary-foreground rounded-t-2xl">
+          <div className="flex items-center justify-between px-4 py-3 border-b bg-primary text-primary-foreground sm:rounded-t-2xl">
             <div>
               <h3 className="font-semibold text-sm">{t('chat.title') as string}</h3>
               <p className="text-[11px] opacity-80">{t('chat.subtitle') as string}</p>

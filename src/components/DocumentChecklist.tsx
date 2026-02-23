@@ -64,7 +64,7 @@ export function DocumentChecklist({ definition, document, participantId }: Props
     <Card className="border-l-4" style={{ borderLeftColor: status === 'verified' ? 'hsl(var(--success))' : status === 'uploaded' ? 'hsl(var(--warning))' : 'hsl(var(--destructive))' }}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <CardContent className="pt-4 pb-4 cursor-pointer hover:bg-muted/30 transition-colors">
+          <CardContent className="pt-4 pb-4 px-3 sm:px-6 cursor-pointer hover:bg-muted/30 transition-colors">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -82,7 +82,7 @@ export function DocumentChecklist({ definition, document, participantId }: Props
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="px-6 pb-4 space-y-4 border-t pt-4">
+          <div className="px-3 sm:px-6 pb-4 space-y-4 border-t pt-4">
             <div className="bg-primary/5 rounded-lg p-3">
               <div className="flex items-start gap-2">
                 <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
