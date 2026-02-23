@@ -1,40 +1,38 @@
 
 
-## Fix: Forzar el idioma del asistente segun el idioma de la interfaz
+## Fix: El asistente responde en el idioma incorrecto
 
-### Problema
-El system prompt dice "responde en el mismo idioma que el mensaje del usuario", pero despues de varias interacciones el modelo puede cambiar de idioma porque:
-1. El system prompt contiene terminos en ambos idiomas
-2. La base de conocimiento mezcla espanol e ingles
-3. No se envia el idioma seleccionado por el usuario al backend
+### Problema identificado
+
+En el edge function `erasmus-chat/index.ts` hay tres problemas que causan la confusion de idioma:
+
+1. **Regla contradictoria**: La regla 2 del system prompt dice "Answer in the SAME LANGUAGE as the user's message", lo cual compite con la instruccion de idioma (`langInstruction`) que se anade al final.
+2. **Posicion debil**: La instruccion de idioma se anade al final de un system prompt muy largo (~100 lineas). Los modelos tienden a dar mas peso al principio.
+3. **Mensajes de error en espanol**: Los errores 429/402/500 estan hardcoded en espanol, lo que puede confundir al modelo en contextos posteriores.
 
 ### Solucion
 
-#### 1. `src/components/DashboardChat.tsx` y `src/components/ErasmusChat.tsx`
-- Enviar el parametro `language` (del `LanguageContext`) junto con los mensajes en el body del fetch:
+#### Archivo: `supabase/functions/erasmus-chat/index.ts`
+
+**Cambio 1 - Eliminar la regla 2 contradictoria**
+- Quitar la linea: `"2. Answer in the SAME LANGUAGE as the user's message (Spanish or English)."`
+- Esto elimina la ambiguedad entre la regla y la instruccion explicita de idioma.
+
+**Cambio 2 - Mover la instruccion de idioma al PRINCIPIO del system prompt**
+- En vez de concatenar `langInstruction` al final (`SYSTEM_PROMPT + langInstruction`), colocarlo como primer parrafo del contenido del system message. El formato sera:
 ```text
-body: JSON.stringify({ messages: allMessages, language })
+[Instruccion de idioma fuerte]
+
+[Resto del system prompt sin la regla 2]
 ```
 
-#### 2. `supabase/functions/erasmus-chat/index.ts`
-- Leer el parametro `language` del body de la peticion
-- Agregar una instruccion explicita al final del system prompt que refuerce el idioma:
+**Cambio 3 - Hacer los mensajes de error bilingues**
+- Usar el parametro `language` para devolver los mensajes de error 429, 402 y 500 en el idioma correcto:
 ```text
-Si language === 'en':
-  "IMPORTANT: The user's interface is in ENGLISH. You MUST respond ONLY in English regardless of any previous messages."
-
-Si language === 'es':
-  "IMPORTANTE: La interfaz del usuario esta en ESPANOL. DEBES responder SOLO en espanol independientemente de mensajes anteriores."
+language === 'en' ? "Too many requests. Try again in a few seconds." : "Demasiadas solicitudes..."
+language === 'en' ? "AI credits exhausted. Contact the administrator." : "Creditos de IA agotados..."
+language === 'en' ? "AI service error" : "Error del servicio de IA"
 ```
 
-### Archivos a modificar
-
-| Archivo | Cambio |
-|---------|--------|
-| `src/components/DashboardChat.tsx` | Enviar `language` en el body del fetch |
-| `src/components/ErasmusChat.tsx` | Enviar `language` en el body del fetch |
-| `supabase/functions/erasmus-chat/index.ts` | Leer `language` y anadir instruccion de idioma al system prompt |
-
-### Resultado
-El asistente siempre respondera en el idioma que el usuario tiene seleccionado en la interfaz, sin importar cuantas preguntas haya hecho previamente.
-
+### Resultado esperado
+El asistente siempre respondera en el idioma de la interfaz del usuario, sin cambiar de idioma durante la conversacion.
