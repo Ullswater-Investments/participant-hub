@@ -1,11 +1,14 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 import { useAllDocuments } from '@/hooks/useDocuments';
 import { participantDocuments } from '@/data/documentDefinitions';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
-import { Users, FolderOpen, CheckCircle2, Clock, Upload } from 'lucide-react';
+import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
+import { DeadlineCountdown } from '@/components/DeadlineCountdown';
+import { exportProgressPDF } from '@/utils/exportPDF';
 
 const participants = [
   { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
@@ -19,7 +22,7 @@ const statusColors: Record<string, string> = {
 
 const Dashboard = () => {
   const { data: allDocs = [], isLoading } = useAllDocuments();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
 
   const getParticipantStats = (pid: number) => {
@@ -33,10 +36,19 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl">
-      <DashboardChat />
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <DeadlineCountdown />
+        <DashboardChat />
+      </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
+        </div>
+        <Button variant="outline" size="sm" className="gap-1.5 shrink-0" onClick={() => exportProgressPDF(allDocs, language)}>
+          <FileDown className="w-4 h-4" />
+          <span className="hidden sm:inline">{t('dashboard.exportPdf') as string}</span>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
