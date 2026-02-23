@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2 } from 'lucide-react';
+import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2, Download } from 'lucide-react';
 import { DocumentDefinition } from '@/data/documentDefinitions';
 import { Document, useUploadDocument, useDeleteDocument, useVerifyDocument } from '@/hooks/useDocuments';
 import { supabase } from '@/integrations/supabase/client';
@@ -122,6 +122,15 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                       <Badge variant={doc.status === 'verified' ? 'default' : 'secondary'} className="text-[10px] shrink-0">
                         {doc.status === 'verified' ? '✓' : '↑'}
                       </Badge>
+                      {doc.file_path && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDownload(doc.file_path!); }}
+                          className="text-primary hover:text-primary/80 shrink-0 p-0.5 rounded hover:bg-primary/10 transition-colors"
+                          title="Descargar archivo"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       {doc.status !== 'verified' && (
                         <button
                           onClick={(e) => { e.stopPropagation(); verifyMutation.mutate(doc.id); }}
