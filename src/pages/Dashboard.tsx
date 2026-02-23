@@ -24,6 +24,10 @@ const Dashboard = () => {
   const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
 
+  const commonDocs = allDocs.filter((d) => d.category === 'common');
+  const commonUploaded = commonDocs.filter((d) => d.status === 'uploaded').length;
+  const commonVerified = commonDocs.filter((d) => d.status === 'verified').length;
+
   const getParticipantStats = (pid: number) => {
     const docs = allDocs.filter((d) => d.participant_id === pid);
     const uploaded = docs.filter((d) => d.status === 'uploaded').length;
@@ -71,7 +75,7 @@ const Dashboard = () => {
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-lg sm:text-2xl font-bold">
-                  {participants.reduce((sum, p) => sum + getParticipantStats(p.id).uploaded, 0)}
+                  {participants.reduce((sum, p) => sum + getParticipantStats(p.id).uploaded, 0) + commonUploaded}
                 </p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground leading-tight">{t('dashboard.uploadedDocs') as string}</p>
               </div>
@@ -86,7 +90,7 @@ const Dashboard = () => {
               </div>
               <div className="text-center sm:text-left">
                 <p className="text-lg sm:text-2xl font-bold">
-                  {participants.reduce((sum, p) => sum + getParticipantStats(p.id).verified, 0)}
+                  {participants.reduce((sum, p) => sum + getParticipantStats(p.id).verified, 0) + commonVerified}
                 </p>
                 <p className="text-[10px] sm:text-sm text-muted-foreground leading-tight">{t('dashboard.verifiedDocs') as string}</p>
               </div>
@@ -137,6 +141,10 @@ const Dashboard = () => {
               <div>
                 <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.commonFolder') as string}</h3>
                 <p className="text-sm text-muted-foreground">{t('dashboard.commonFolderDesc') as string}</p>
+                <div className="flex gap-3 mt-1 text-xs">
+                  <span className="text-warning">● {commonUploaded} {t('dashboard.uploaded') as string}</span>
+                  <span className="text-success">● {commonVerified} {t('dashboard.verified') as string}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
