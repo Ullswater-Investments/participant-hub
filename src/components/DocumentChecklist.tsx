@@ -56,6 +56,11 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
     }
   };
 
+  const handleDelete = (doc: Document) => {
+    if (!window.confirm(`¿Eliminar "${doc.file_name || doc.document_key}"?`)) return;
+    deleteMutation.mutate({ documentId: doc.id, filePath: doc.file_path });
+  };
+
   return (
     <Card className="border-l-4" style={{ borderLeftColor: status === 'verified' ? 'hsl(var(--success))' : status === 'uploaded' ? 'hsl(var(--warning))' : 'hsl(var(--destructive))' }}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
