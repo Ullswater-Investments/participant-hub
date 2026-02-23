@@ -103,7 +103,7 @@ const Dashboard = () => {
             return (
               <Link to={`/participante/${p.id}`} key={p.id}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-4 sm:pt-6">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">

@@ -166,7 +166,7 @@ export function DashboardChat() {
       </div>
 
       {/* Messages area */}
-      <ScrollArea className="h-[260px] p-3" ref={scrollRef as any}>
+      <ScrollArea className="h-[180px] sm:h-[260px] p-3" ref={scrollRef as any}>
         {messages.length === 0 && (
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground text-center mt-2 mb-3">
