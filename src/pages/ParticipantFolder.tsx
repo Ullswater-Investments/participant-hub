@@ -51,7 +51,7 @@ const ParticipantFolder = () => {
 
         <TabsContent value="administrative" className="space-y-3">
           {adminDocs.map((def) => (
-            <DocumentChecklist key={def.key} definition={def} document={getDoc(def.key)} participantId={participantId} />
+            <DocumentChecklist key={def.key} definition={def} documents={getDocs(def.key)} participantId={participantId} />
           ))}
         </TabsContent>
 
