@@ -104,7 +104,7 @@ const Dashboard = () => {
                       <span className="text-sm font-semibold text-primary">{stats.percentage}%</span>
                     </div>
                     <Progress value={stats.percentage} className="h-2" />
-                    <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                    <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 text-xs text-muted-foreground">
                       <span className={statusColors.pending}>● {stats.pending} {t('dashboard.pending') as string}</span>
                       <span className={statusColors.uploaded}>● {stats.uploaded} {t('dashboard.uploaded') as string}</span>
                       <span className={statusColors.verified}>● {stats.verified} {t('dashboard.verified') as string}</span>

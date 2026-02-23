@@ -32,14 +32,14 @@ const Guides = () => {
   const linkKeys = ['guides.link1', 'guides.link2', 'guides.link3', 'guides.link4', 'guides.link5'];
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-6 sm:space-y-8 max-w-4xl">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-          <BookOpen className="w-6 h-6 text-primary" />
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
         </div>
-        <div>
-          <h1 className="text-3xl font-bold">{t('guides.title') as string}</h1>
-          <p className="text-muted-foreground">{t('guides.subtitle') as string}</p>
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold">{t('guides.title') as string}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground truncate">{t('guides.subtitle') as string}</p>
         </div>
       </div>
 

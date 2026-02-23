@@ -38,14 +38,14 @@ const ParticipantFolder = () => {
       </div>
 
       <Tabs defaultValue="administrative" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="administrative" className="gap-2">
-            <Briefcase className="w-4 h-4" />
-            {t('participant.administrative') as string} ({adminDocs.length})
+        <TabsList className="w-full sm:w-auto flex">
+          <TabsTrigger value="administrative" className="gap-1.5 sm:gap-2 flex-1 sm:flex-initial text-xs sm:text-sm">
+            <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="truncate">{t('participant.administrative') as string} ({adminDocs.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="technical" className="gap-2">
-            <FileText className="w-4 h-4" />
-            {t('participant.technical') as string} ({techDocs.length})
+          <TabsTrigger value="technical" className="gap-1.5 sm:gap-2 flex-1 sm:flex-initial text-xs sm:text-sm">
+            <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="truncate">{t('participant.technical') as string} ({techDocs.length})</span>
           </TabsTrigger>
         </TabsList>
 
