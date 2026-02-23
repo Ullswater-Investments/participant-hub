@@ -136,20 +136,20 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Demasiadas solicitudes. Inténtalo de nuevo en unos segundos." }),
+          JSON.stringify({ error: language === 'en' ? "Too many requests. Try again in a few seconds." : "Demasiadas solicitudes. Inténtalo de nuevo en unos segundos." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Créditos de IA agotados. Contacta al administrador." }),
+          JSON.stringify({ error: language === 'en' ? "AI credits exhausted. Contact the administrator." : "Créditos de IA agotados. Contacta al administrador." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const t = await response.text();
       console.error("AI gateway error:", response.status, t);
       return new Response(
-        JSON.stringify({ error: "Error del servicio de IA" }),
+        JSON.stringify({ error: language === 'en' ? "AI service error" : "Error del servicio de IA" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
