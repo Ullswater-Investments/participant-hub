@@ -1,82 +1,75 @@
 
-## Chat Asistencial Erasmus+ con IA y Enlaces Oficiales
+
+## Chatbot inline en el Dashboard con base de conocimiento Erasmus+ KA3
 
 ### Resumen
 
-Crear un chat asistencial inteligente integrado en el portal que responda preguntas frecuentes sobre el programa Erasmus+ KA220, proporcionando enlaces directos a fuentes oficiales de la Comision Europea. El chat estara alimentado por una base de conocimiento curada y utilizara Lovable AI para generar respuestas contextuales.
+Crear un componente de chatbot inline (no flotante) que se posicione justo encima del titulo h1 "Panel principal" en el Dashboard. El chatbot ocupara todo el ancho disponible del contenedor, estara conectado a la edge function `erasmus-chat` existente, y solo respondera preguntas relacionadas con Erasmus+ KA3. Si el usuario pregunta algo fuera de tema, el asistente le advertira.
 
 ---
 
-### 1. Base de datos - Correccion de seguridad
+### 1. Actualizar el System Prompt de la Edge Function
 
-Las politicas RLS de la tabla `documents` usan `USING (true)` para INSERT, UPDATE y DELETE, lo cual es permisivo. Sin embargo, dado que este portal usa autenticacion por contrasena compartida (no por usuario individual), estas politicas son coherentes con el modelo de acceso actual. No se requieren cambios en las tablas existentes.
+**Archivo:** `supabase/functions/erasmus-chat/index.ts`
 
-### 2. Base de conocimiento: fuentes oficiales
+Modificar el system prompt para:
+- Cambiar todas las referencias de "KA220" a "KA3" (o incluir ambas si procede)
+- Anadir una regla critica: **si el usuario pregunta algo que NO esta relacionado con Erasmus+, debe responder con una advertencia clara** indicando que solo puede resolver dudas sobre Erasmus+ KA3, y no responder a la pregunta fuera de tema.
 
-El sistema prompt del agente incluira enlaces verificados a fuentes oficiales de la CE:
+Texto de la regla a anadir:
+> "5. If the user asks a question that is NOT related to the Erasmus+ programme (KA3 or general Erasmus+ topics), you MUST decline politely and explain that you can only answer questions about Erasmus+ KA3. Do NOT answer off-topic questions."
 
-| Recurso | URL |
-|---------|-----|
-| Funding & Tenders Portal | https://ec.europa.eu/info/funding-tenders/opportunities/portal/ |
-| Participant Register | https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register |
-| Erasmus+ Programme Guide 2025 | https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2025-version-2 |
-| Guia web del Programa | https://erasmus-plus.ec.europa.eu/programme-guide |
-| Registro de organizaciones | https://erasmus-plus.ec.europa.eu/resources-and-tools/how-to-apply/registering-your-organisation |
-| Convocatorias 2025 | https://erasmus-plus.ec.europa.eu/news/2025-erasmus-call-for-funding-now-open |
-| SEPIE (Agencia Nacional Espana) | https://www.sepie.es |
-| Legal Entity Form | https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/common/agr-contr/legal-entity-form_en.pdf |
-| Financial ID Form | https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/common/agr-contr/financial-id-form_en.pdf |
-| Europass CV Builder | https://europa.eu/europass/en |
-| KA220 Cooperation Partnerships | https://erasmus-plus.ec.europa.eu/programme-guide/part-b/key-action-2/cooperation-partnerships |
+### 2. Crear componente DashboardChat
 
-### 3. Backend - Edge Function `erasmus-chat`
+**Archivo nuevo:** `src/components/DashboardChat.tsx`
 
-Crear `supabase/functions/erasmus-chat/index.ts` que:
-- Reciba mensajes del usuario y el historial de conversacion
-- Inyecte un system prompt extenso con toda la base de conocimiento Erasmus+ (enlaces, procedimientos, plazos, requisitos KA220)
-- Utilice streaming SSE via Lovable AI Gateway (`google/gemini-3-flash-preview`)
-- Instruya al modelo para SIEMPRE incluir enlaces oficiales relevantes en sus respuestas
-- Maneje errores 429/402 con mensajes claros
+Componente inline (Card) que:
+- Ocupa todo el ancho del contenedor (mismo ancho que el h1)
+- Muestra un campo de entrada con boton de envio
+- Tiene un area de mensajes con scroll
+- Usa streaming token-by-token conectado a la edge function `erasmus-chat`
+- Renderiza las respuestas con ReactMarkdown (enlaces clickables)
+- Muestra chips de preguntas frecuentes cuando no hay mensajes
+- Es bilingue (usa el contexto de idioma existente)
+- Tiene un header con icono y titulo del asistente
+- Altura fija (ej. 300px) con scroll interno para los mensajes
 
-El system prompt incluira:
-- Descripcion completa del programa KA220
-- Procedimientos paso a paso (PIC, mandatos, presupuesto, etc.)
-- URLs oficiales categorizadas
-- Instrucciones para responder siempre con enlaces a fuentes
-- Respuestas en el idioma del usuario (ES/EN)
+Estructura visual:
+```text
++--------------------------------------------------+
+| [robot icon] Asistente Erasmus+ KA3              |
+| Pregunta sobre el programa Erasmus+ KA3          |
+|--------------------------------------------------|
+| [chips de FAQ cuando esta vacio]                  |
+|                                                   |
+| [area de mensajes con scroll]                     |
+|                                                   |
+|--------------------------------------------------|
+| [input de texto]                    [boton enviar]|
++--------------------------------------------------+
+```
 
-### 4. Frontend - Componente de Chat
+### 3. Integrar el componente en Dashboard
 
-Crear `src/components/ErasmusChat.tsx`:
-- Boton flotante en la esquina inferior derecha (icono de chat)
-- Panel desplegable con interfaz de chat
-- Preguntas frecuentes sugeridas como chips clickables (ej: "Como obtener el PIC?", "Que documentos necesito?", "Plazos de la convocatoria")
-- Streaming token-by-token de las respuestas
-- Renderizado de markdown en las respuestas (enlaces clickables)
-- Soporte bilingue (ES/EN) usando el contexto de idioma existente
+**Archivo:** `src/pages/Dashboard.tsx`
 
-### 5. Integracion en el portal
+- Importar `DashboardChat`
+- Colocarlo justo antes del bloque `<div>` que contiene el h1, dentro del contenedor principal
+- El chatbot tendra el mismo `max-w-5xl` que el resto del dashboard
 
-- Agregar `ErasmusChat` al `AppLayout.tsx` para que este disponible en todas las paginas
-- Agregar traducciones para el chat en `src/i18n/es.ts` y `src/i18n/en.ts`
+### 4. Actualizar traducciones
 
-### 6. Preguntas frecuentes predefinidas (chips)
+**Archivos:** `src/i18n/es.ts` y `src/i18n/en.ts`
 
-En espanol:
-- "Como registro mi organizacion y obtengo el PIC?"
-- "Que documentos necesito para la propuesta?"
-- "Como funciona el presupuesto Lump Sum?"
-- "Donde descargo el Legal Entity Form?"
-- "Cuales son los plazos de la convocatoria 2025?"
-- "Como se firma el mandato?"
+Anadir nuevas claves:
+- `dashboard.chatTitle`: "Asistente Erasmus+ KA3" / "Erasmus+ KA3 Assistant"
+- `dashboard.chatSubtitle`: "Pregunta sobre el programa Erasmus+ KA3" / "Ask about the Erasmus+ KA3 programme"
+- `dashboard.chatWelcome`: mensaje de bienvenida con chips FAQ
+- `dashboard.chatPlaceholder`: "Escribe tu pregunta sobre Erasmus+ KA3..." / "Type your Erasmus+ KA3 question..."
 
-En ingles:
-- "How do I register my organisation and get a PIC?"
-- "What documents do I need for the proposal?"
-- "How does the Lump Sum budget work?"
-- "Where do I download the Legal Entity Form?"
-- "What are the 2025 call deadlines?"
-- "How do I sign the mandate?"
+### 5. Actualizar las FAQ del chatbot flotante
+
+Actualizar tambien los textos de las FAQ en `ErasmusChat.tsx` para que mencionen KA3 en lugar de (o ademas de) KA220, manteniendo coherencia.
 
 ---
 
@@ -84,21 +77,22 @@ En ingles:
 
 | Archivo | Descripcion |
 |---------|-------------|
-| `supabase/functions/erasmus-chat/index.ts` | Edge function con system prompt y streaming |
-| `src/components/ErasmusChat.tsx` | Componente de chat flotante con UI completa |
+| `src/components/DashboardChat.tsx` | Chatbot inline con streaming y markdown |
 
 ### Archivos a modificar
 
 | Archivo | Cambio |
 |---------|--------|
-| `src/components/AppLayout.tsx` | Agregar componente ErasmusChat |
-| `src/i18n/es.ts` | Traducciones del chat |
-| `src/i18n/en.ts` | Traducciones del chat |
+| `supabase/functions/erasmus-chat/index.ts` | Anadir regla de rechazo para preguntas fuera de Erasmus+ |
+| `src/pages/Dashboard.tsx` | Insertar DashboardChat antes del h1 |
+| `src/i18n/es.ts` | Nuevas traducciones del chat inline |
+| `src/i18n/en.ts` | Nuevas traducciones del chat inline |
 
 ### Notas tecnicas
 
-- Se usa LOVABLE_API_KEY (ya configurada) para autenticacion con Lovable AI Gateway
-- Modelo: `google/gemini-3-flash-preview` (rapido, buen equilibrio coste/calidad)
-- El chat no persiste conversaciones en base de datos (se reinicia al cerrar); esto mantiene la simplicidad
-- Los enlaces en las respuestas del modelo se renderizan como links clickables gracias a react-markdown
-- Se necesita instalar `react-markdown` como dependencia
+- Se reutiliza la misma edge function `erasmus-chat` ya existente; no se crea una nueva
+- El componente DashboardChat es independiente del ErasmusChat flotante (pueden coexistir)
+- Se usa ReactMarkdown (ya instalado) para renderizar enlaces en las respuestas
+- El streaming usa la misma logica SSE ya probada en ErasmusChat
+- La restriccion de tema se aplica a nivel del system prompt del modelo, no en el frontend
+
