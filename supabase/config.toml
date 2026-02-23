@@ -2,3 +2,6 @@ project_id = "rktmbrecahsswjbxbofz"
 
 [functions.erasmus-chat]
 verify_jwt = false
+
+[functions.verify-password]
+verify_jwt = false
