@@ -1,38 +1,40 @@
 
 
-## Mostrar sugerencias de preguntas despues de cada respuesta del asistente
+## Fix: Forzar el idioma del asistente segun el idioma de la interfaz
 
-### Objetivo
-Despues de que el asistente termine de responder, mostrar de nuevo etiquetas con preguntas sugeridas debajo de la respuesta. Las preguntas deben variar para no repetir siempre las mismas, y deben ser relevantes al contexto de la conversacion.
+### Problema
+El system prompt dice "responde en el mismo idioma que el mensaje del usuario", pero despues de varias interacciones el modelo puede cambiar de idioma porque:
+1. El system prompt contiene terminos en ambos idiomas
+2. La base de conocimiento mezcla espanol e ingles
+3. No se envia el idioma seleccionado por el usuario al backend
 
-### Cambios necesarios
+### Solucion
 
-#### 1. `src/components/DashboardChat.tsx`
+#### 1. `src/components/DashboardChat.tsx` y `src/components/ErasmusChat.tsx`
+- Enviar el parametro `language` (del `LanguageContext`) junto con los mensajes en el body del fetch:
+```text
+body: JSON.stringify({ messages: allMessages, language })
+```
 
-**Nuevo pool de preguntas ampliado:**
-- Crear un pool mas grande de preguntas (unas 15-20 por idioma) cubriendo distintos temas clave de la convocatoria Youth Together 2026
-- Temas: elegibilidad, presupuesto, plazos, documentos, PIC, mandatos, consorcio, actividades, evaluacion, etc.
+#### 2. `supabase/functions/erasmus-chat/index.ts`
+- Leer el parametro `language` del body de la peticion
+- Agregar una instruccion explicita al final del system prompt que refuerce el idioma:
+```text
+Si language === 'en':
+  "IMPORTANT: The user's interface is in ENGLISH. You MUST respond ONLY in English regardless of any previous messages."
 
-**Logica de seleccion de preguntas:**
-- Despues de cada respuesta del asistente, mostrar 3-4 preguntas sugeridas seleccionadas aleatoriamente del pool
-- Excluir preguntas que el usuario ya haya formulado (comparando con el historial de mensajes)
-- Mostrar las sugerencias solo cuando el asistente haya terminado de responder (no durante el streaming, es decir cuando `isLoading` es false)
+Si language === 'es':
+  "IMPORTANTE: La interfaz del usuario esta en ESPANOL. DEBES responder SOLO en espanol independientemente de mensajes anteriores."
+```
 
-**Ubicacion en el UI:**
-- Las etiquetas de sugerencia aparecen justo debajo del ultimo mensaje del asistente, antes del input
-- Mismo estilo visual que las FAQ iniciales (botones redondeados con borde)
-- Al hacer clic en una sugerencia, se envia como mensaje del usuario
+### Archivos a modificar
 
-### Detalle tecnico
+| Archivo | Cambio |
+|---------|--------|
+| `src/components/DashboardChat.tsx` | Enviar `language` en el body del fetch |
+| `src/components/ErasmusChat.tsx` | Enviar `language` en el body del fetch |
+| `supabase/functions/erasmus-chat/index.ts` | Leer `language` y anadir instruccion de idioma al system prompt |
 
-| Aspecto | Detalle |
-|---------|---------|
-| Pool de preguntas | ~18 preguntas por idioma, organizadas por temas |
-| Seleccion | Aleatorio, excluyendo las ya preguntadas |
-| Cantidad mostrada | 3-4 sugerencias por vez |
-| Visibilidad | Solo cuando `isLoading === false` y hay al menos un mensaje del asistente |
-| Interaccion | Click envia la pregunta como mensaje de usuario |
-| Archivo modificado | Solo `src/components/DashboardChat.tsx` |
-
-Se aplicara el mismo cambio al componente `src/components/ErasmusChat.tsx` (chat flotante) para mantener coherencia.
+### Resultado
+El asistente siempre respondera en el idioma que el usuario tiene seleccionado en la interfaz, sin importar cuantas preguntas haya hecho previamente.
 
