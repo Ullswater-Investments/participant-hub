@@ -1,73 +1,107 @@
 
 
-## Portal Web de Gestión de Propuesta Erasmus+
+## Internationalization (i18n) - English and Spanish Bilingual Portal
 
-Portal web para coordinar la preparación y recopilación de documentos administrativos y técnicos de una propuesta Erasmus+, con carpetas por socio y espacio compartido.
+Add full bilingual support (English/Spanish) across the entire portal: UI labels, document definitions, templates, guides, and all static content. Users can switch language with a toggle in the header.
 
 ---
 
-### 1. Página de acceso con contraseña compartida
-- Pantalla de login simple con una contraseña única para todo el consorcio
-- Una vez introducida, se guarda en sesión y da acceso al portal completo
-- Sin registro de usuarios individuales
+### 1. Language Context and Toggle
 
-### 2. Panel principal (Dashboard)
-- Vista general del estado de preparación de la propuesta
-- Barra de progreso por cada participante mostrando % de documentos completados
-- Resumen rápido: documentos pendientes, subidos y verificados por socio
-- Acceso rápido a cada carpeta de participante y a la carpeta común
+Create a `LanguageContext` (`src/contexts/LanguageContext.tsx`) that:
+- Stores the current language (`en` or `es`) in React context and `localStorage`
+- Defaults to Spanish (`es`)
+- Provides a `t()` helper function to retrieve translated strings
+- Exposes a language toggle function
 
-### 3. Carpetas individuales por participante (Participante 1-5)
-Cada participante tiene su carpeta con un **checklist de documentos** organizados en dos secciones:
+Add a language toggle button (EN/ES) in the `AppLayout.tsx` header bar, next to the sidebar trigger.
 
-**Documentación Administrativa:**
-- PIC number y datos de registro en el Participant Register
-- Formulario de entidad legal (Legal Entity Form)
-- Formulario de identificación financiera (Financial Identification Form)
-- Mandato firmado (Mandate / Declaration of Honour)
-- Documento de identificación del representante legal
-- Certificado de existencia legal de la organización
-- Balance de cuentas / estados financieros (si aplica)
+### 2. Translation Files
 
-**Documentación Técnica:**
-- Descripción de la organización y experiencia relevante
-- CV del personal clave involucrado en el proyecto
-- Descripción de la contribución al proyecto (actividades y resultados)
-- Presupuesto desglosado del participante (Excel presupuestario)
-- Carta de compromiso firmada
-- Recursos e infraestructura disponibles
+Create a translations directory with two files:
 
-Cada documento del checklist mostrará:
-- Estado (pendiente / subido / verificado)
-- Botón para subir archivo (PDF, Excel, Word)
-- Guía explicativa de qué es el documento y cómo obtenerlo
-- Posibilidad de añadir notas/comentarios
+**`src/i18n/es.ts`** - All Spanish strings (current content)
+**`src/i18n/en.ts`** - All English translations
 
-### 4. Carpeta Común del Consorcio
-Espacio compartido para documentos transversales:
-- **Plantilla de la Memoria Técnica** (Technical Description template)
-- **Cartas de interés** (Letters of Interest/Support)
-- **Presupuesto consolidado** del consorcio
-- **Acuerdo de consorcio** (borrador)
-- **Guías y manuales** de la convocatoria
-- Cualquier otro documento de referencia compartido
+These files will contain ALL UI text organized by section:
+- `login` - Login page (password, access button, error messages)
+- `sidebar` - Navigation labels (Dashboard, Participants, Consortium)
+- `dashboard` - Summary cards, progress labels, status names
+- `documents` - Status labels (Pending/Uploaded/Verified), upload buttons, notes
+- `participant` - Folder page titles, tabs (Administrative/Technical)
+- `common` - Common folder page
+- `guides` - All guide content (titles, steps, links)
+- `general` - Shared labels (close session, search, etc.)
 
-### 5. Sección de Guías e Información
-Página informativa que explica:
-- Pasos para registrarse en el Participant Register y obtener el PIC
-- Cómo descargar y gestionar mandatos
-- Cómo rellenar el Excel presupuestario sin errores
-- Checklist general de requisitos de la convocatoria Erasmus+
-- Enlaces útiles a la web de la Agencia Nacional y portal Funding & Tenders
+### 3. Bilingual Document Definitions
 
-### 6. Diseño y navegación
-- Barra lateral (sidebar) con acceso a cada participante y carpeta común
-- Diseño limpio y profesional, fácil de usar para perfiles no técnicos
-- Indicadores visuales de progreso con iconos y colores (rojo/amarillo/verde)
-- Responsive para uso en móvil y tablet
+Update `src/data/documentDefinitions.ts` to include both languages for each document:
 
-### Notas técnicas
-- Se usará Supabase como backend para almacenamiento de archivos y datos
-- Los documentos se guardarán en Supabase Storage con buckets por participante
-- Los datos del checklist y estados se guardarán en base de datos
+```
+{
+  key: 'pic_number',
+  name: { es: 'PIC Number y datos de registro', en: 'PIC Number and Registration Data' },
+  description: { es: '...', en: '...' },
+  guide: { es: '...', en: '...' },
+  category: 'administrative',
+}
+```
+
+Update the `DocumentDefinition` interface to use `{ en: string; es: string }` for `name`, `description`, and `guide` fields.
+
+### 4. Bilingual Templates (pending feature)
+
+When the Templates page is created, it will use the same bilingual pattern. The plan from the previous message already defines template content -- all that content will be provided in both languages.
+
+### 5. Component Updates
+
+Every component with hardcoded Spanish text will be updated to use the `t()` function:
+
+| Component | Changes |
+|-----------|---------|
+| `Login.tsx` | Title, description, password label, placeholder, button, error |
+| `AppSidebar.tsx` | Portal title, section labels, participant names, menu items, logout |
+| `AppLayout.tsx` | Header subtitle, add language toggle |
+| `Dashboard.tsx` | Page title, card labels, status text, section headers |
+| `ParticipantFolder.tsx` | Title, tab labels, progress text |
+| `CommonFolder.tsx` | Title, description |
+| `Guides.tsx` | All guide titles, steps, link labels, useful links section |
+| `DocumentChecklist.tsx` | Status labels, upload button, notes label, placeholder |
+| `NotFound.tsx` | 404 text |
+
+### 6. Guides Content in English
+
+Full English translations for all 4 guides and useful links:
+- "How to register and obtain your PIC"
+- "How to download and manage mandates"
+- "How to fill in the Lump Sum budget Excel"
+- "General Erasmus+ checklist"
+
+---
+
+### Technical approach
+
+- No external i18n library needed -- a simple React Context with typed translation objects keeps things lightweight
+- The `t()` function takes a dot-notation key (e.g., `t('login.title')`) and returns the string for the current language
+- Document definitions use inline bilingual objects so a helper `tDoc(def.name)` returns the right language
+- Language preference persists in `localStorage`
+- No database changes required
+
+### Files to create
+- `src/contexts/LanguageContext.tsx`
+- `src/i18n/en.ts`
+- `src/i18n/es.ts`
+
+### Files to modify
+- `src/data/documentDefinitions.ts` (bilingual fields)
+- `src/App.tsx` (wrap with LanguageProvider)
+- `src/components/AppLayout.tsx` (language toggle)
+- `src/components/AppSidebar.tsx` (translated labels)
+- `src/components/DocumentChecklist.tsx` (translated labels)
+- `src/pages/Login.tsx`
+- `src/pages/Dashboard.tsx`
+- `src/pages/ParticipantFolder.tsx`
+- `src/pages/CommonFolder.tsx`
+- `src/pages/Guides.tsx`
+- `src/pages/NotFound.tsx`
 
