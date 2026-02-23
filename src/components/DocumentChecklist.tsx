@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2 } from 'lucide-react';
 import { DocumentDefinition } from '@/data/documentDefinitions';
-import { Document, useUploadDocument, useDeleteDocument } from '@/hooks/useDocuments';
+import { Document, useUploadDocument, useDeleteDocument, useVerifyDocument } from '@/hooks/useDocuments';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 
