@@ -137,7 +137,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                       </Badge>
                       {doc.file_path && (
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleDownload(doc.file_path!); }}
+                          onClick={(e) => { e.stopPropagation(); handleDownload(doc.file_path!, doc.file_name ?? undefined); }}
                           className="text-primary hover:text-primary/80 shrink-0 p-0.5 rounded hover:bg-primary/10 transition-colors"
                           title="Descargar archivo"
                         >
