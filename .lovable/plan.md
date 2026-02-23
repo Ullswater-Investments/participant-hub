@@ -1,41 +1,38 @@
 
 
-## Mostrar contadores de documentos comunes en el Dashboard
+## Mostrar sugerencias de preguntas despues de cada respuesta del asistente
 
-### Problema actual
-- Los contadores globales ("Uploaded docs" y "Verified docs") solo cuentan documentos de participantes (1-5), ignorando los documentos de la carpeta comun.
-- La tarjeta "Carpeta comun" no muestra ningun contador de documentos subidos/verificados.
+### Objetivo
+Despues de que el asistente termine de responder, mostrar de nuevo etiquetas con preguntas sugeridas debajo de la respuesta. Las preguntas deben variar para no repetir siempre las mismas, y deben ser relevantes al contexto de la conversacion.
 
 ### Cambios necesarios
 
-#### `src/pages/Dashboard.tsx`
+#### 1. `src/components/DashboardChat.tsx`
 
-**1. Incluir documentos comunes en los contadores globales**
-- Calcular estadisticas de documentos comunes (category === 'common') a partir de `allDocs`
-- Sumar estos valores a los contadores de "Uploaded docs" y "Verified docs" del panel superior
+**Nuevo pool de preguntas ampliado:**
+- Crear un pool mas grande de preguntas (unas 15-20 por idioma) cubriendo distintos temas clave de la convocatoria Youth Together 2026
+- Temas: elegibilidad, presupuesto, plazos, documentos, PIC, mandatos, consorcio, actividades, evaluacion, etc.
 
-**2. Mostrar contadores en la tarjeta "Carpeta comun"**
-- Anadir debajo del subtitulo de "Carpeta comun" indicadores con el numero de documentos subidos y verificados, usando el mismo estilo de colores del resto del dashboard (naranja para subidos, verde para verificados)
+**Logica de seleccion de preguntas:**
+- Despues de cada respuesta del asistente, mostrar 3-4 preguntas sugeridas seleccionadas aleatoriamente del pool
+- Excluir preguntas que el usuario ya haya formulado (comparando con el historial de mensajes)
+- Mostrar las sugerencias solo cuando el asistente haya terminado de responder (no durante el streaming, es decir cuando `isLoading` es false)
+
+**Ubicacion en el UI:**
+- Las etiquetas de sugerencia aparecen justo debajo del ultimo mensaje del asistente, antes del input
+- Mismo estilo visual que las FAQ iniciales (botones redondeados con borde)
+- Al hacer clic en una sugerencia, se envia como mensaje del usuario
 
 ### Detalle tecnico
 
-Se calcularan las estadisticas de documentos comunes filtrando `allDocs` por `category === 'common'`:
+| Aspecto | Detalle |
+|---------|---------|
+| Pool de preguntas | ~18 preguntas por idioma, organizadas por temas |
+| Seleccion | Aleatorio, excluyendo las ya preguntadas |
+| Cantidad mostrada | 3-4 sugerencias por vez |
+| Visibilidad | Solo cuando `isLoading === false` y hay al menos un mensaje del asistente |
+| Interaccion | Click envia la pregunta como mensaje de usuario |
+| Archivo modificado | Solo `src/components/DashboardChat.tsx` |
 
-```text
-commonUploaded = docs con status 'uploaded'
-commonVerified = docs con status 'verified'
-```
-
-Los contadores globales pasaran de:
-- `participants.reduce(...)` (solo participantes)
-- a `participants.reduce(...) + commonUploaded/commonVerified`
-
-La tarjeta "Carpeta comun" mostrara algo como:
-```text
-Carpeta comun
-Documentos compartidos del consorcio
-X subidos | Y verificados
-```
-
-Solo se modifica un archivo: `src/pages/Dashboard.tsx`.
+Se aplicara el mismo cambio al componente `src/components/ErasmusChat.tsx` (chat flotante) para mantener coherencia.
 
