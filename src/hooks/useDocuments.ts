@@ -112,6 +112,27 @@ export function useDeleteDocument() {
   });
 }
 
+export function useVerifyDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (documentId: string) => {
+      const { error } = await supabase
+        .from('documents')
+        .update({ status: 'verified' })
+        .eq('id', documentId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      toast.success('Documento verificado correctamente');
+    },
+    onError: (error) => {
+      toast.error('Error al verificar el documento: ' + error.message);
+    },
+  });
+}
+
 export function useUpdateDocumentNotes() {
   const queryClient = useQueryClient();
 

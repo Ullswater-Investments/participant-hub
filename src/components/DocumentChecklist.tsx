@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Upload, CheckCircle2, Clock, ChevronDown, MessageSquare, ExternalLink, Info, FileText, Trash2 } from 'lucide-react';
 import { DocumentDefinition } from '@/data/documentDefinitions';
-import { Document, useUploadDocument, useDeleteDocument } from '@/hooks/useDocuments';
+import { Document, useUploadDocument, useDeleteDocument, useVerifyDocument } from '@/hooks/useDocuments';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -21,6 +21,7 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = useUploadDocument();
   const deleteMutation = useDeleteDocument();
+  const verifyMutation = useVerifyDocument();
   const { t, tDoc } = useLanguage();
 
   const hasFiles = documents.length > 0;
@@ -121,6 +122,16 @@ export function DocumentChecklist({ definition, documents, participantId }: Prop
                       <Badge variant={doc.status === 'verified' ? 'default' : 'secondary'} className="text-[10px] shrink-0">
                         {doc.status === 'verified' ? '✓' : '↑'}
                       </Badge>
+                      {doc.status !== 'verified' && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); verifyMutation.mutate(doc.id); }}
+                          disabled={verifyMutation.isPending}
+                          className="text-green-600 hover:text-green-700 shrink-0 p-0.5 rounded hover:bg-green-100 transition-colors disabled:opacity-50"
+                          title="Validar documento"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDelete(doc); }}
                         disabled={deleteMutation.isPending}
