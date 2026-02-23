@@ -22,7 +22,7 @@ const statusColors: Record<string, string> = {
 
 const Dashboard = () => {
   const { data: allDocs = [], isLoading } = useAllDocuments();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
 
   const getParticipantStats = (pid: number) => {
