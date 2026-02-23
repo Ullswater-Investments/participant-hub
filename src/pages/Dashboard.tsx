@@ -34,7 +34,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-5xl">
+    <div className="space-y-6 sm:space-y-8 max-w-5xl pb-16 sm:pb-0">
       <DashboardChat />
       <div className="flex items-center justify-between">
         <div>
@@ -47,48 +47,48 @@ const Dashboard = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-destructive" />
+          <CardContent className="pt-4 sm:pt-6 px-3 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-destructive" />
               </div>
-              <div>
-                <p className="text-2xl font-bold">
+              <div className="text-center sm:text-left">
+                <p className="text-lg sm:text-2xl font-bold">
                   {participants.reduce((sum, p) => sum + getParticipantStats(p.id).pending, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">{t('dashboard.pendingDocs') as string}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground leading-tight">{t('dashboard.pendingDocs') as string}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
-                <Upload className="w-5 h-5 text-accent-foreground" />
+          <CardContent className="pt-4 sm:pt-6 px-3 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
+                <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-accent-foreground" />
               </div>
-              <div>
-                <p className="text-2xl font-bold">
+              <div className="text-center sm:text-left">
+                <p className="text-lg sm:text-2xl font-bold">
                   {participants.reduce((sum, p) => sum + getParticipantStats(p.id).uploaded, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">{t('dashboard.uploadedDocs') as string}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground leading-tight">{t('dashboard.uploadedDocs') as string}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-primary" />
+          <CardContent className="pt-4 sm:pt-6 px-3 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
-              <div>
-                <p className="text-2xl font-bold">
+              <div className="text-center sm:text-left">
+                <p className="text-lg sm:text-2xl font-bold">
                   {participants.reduce((sum, p) => sum + getParticipantStats(p.id).verified, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">{t('dashboard.verifiedDocs') as string}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground leading-tight">{t('dashboard.verifiedDocs') as string}</p>
               </div>
             </div>
           </CardContent>
@@ -103,7 +103,7 @@ const Dashboard = () => {
             return (
               <Link to={`/participante/${p.id}`} key={p.id}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-4 sm:pt-6">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
