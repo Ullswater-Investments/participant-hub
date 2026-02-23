@@ -82,7 +82,7 @@ export function DocumentChecklist({ definition, document, participantId }: Props
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="px-6 pb-4 space-y-4 border-t pt-4">
+          <div className="px-3 sm:px-6 pb-4 space-y-4 border-t pt-4">
             <div className="bg-primary/5 rounded-lg p-3">
               <div className="flex items-start gap-2">
                 <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
