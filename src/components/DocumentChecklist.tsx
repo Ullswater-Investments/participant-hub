@@ -54,8 +54,10 @@ export function DocumentChecklist({ definition, document, participantId }: Props
 
   const handleDownload = async () => {
     if (!document?.file_path) return;
-    const { data } = supabase.storage.from('documents').getPublicUrl(document.file_path);
-    window.open(data.publicUrl, '_blank');
+    const { data, error } = await supabase.storage.from('documents').createSignedUrl(document.file_path, 3600);
+    if (data?.signedUrl) {
+      window.open(data.signedUrl, '_blank');
+    }
   };
 
   return (
