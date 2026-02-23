@@ -1,16 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useAllDocuments } from '@/hooks/useDocuments';
 import { participantDocuments } from '@/data/documentDefinitions';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import { Users, FolderOpen, CheckCircle2, Clock, Upload } from 'lucide-react';
 
 const participants = [
-  { id: 1, name: 'Participante 1' },
-  { id: 2, name: 'Participante 2' },
-  { id: 3, name: 'Participante 3' },
-  { id: 4, name: 'Participante 4' },
-  { id: 5, name: 'Participante 5' },
+  { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
 ];
 
 const statusColors: Record<string, string> = {
@@ -19,14 +16,9 @@ const statusColors: Record<string, string> = {
   verified: 'text-success',
 };
 
-const statusLabels: Record<string, string> = {
-  pending: 'Pendiente',
-  uploaded: 'Subido',
-  verified: 'Verificado',
-};
-
 const Dashboard = () => {
   const { data: allDocs = [], isLoading } = useAllDocuments();
+  const { t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
 
   const getParticipantStats = (pid: number) => {
@@ -41,11 +33,10 @@ const Dashboard = () => {
   return (
     <div className="space-y-8 max-w-5xl">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Panel principal</h1>
-        <p className="text-muted-foreground mt-1">Estado general de la documentación del consorcio Erasmus+</p>
+        <h1 className="text-3xl font-bold text-foreground">{t('dashboard.title') as string}</h1>
+        <p className="text-muted-foreground mt-1">{t('dashboard.subtitle') as string}</p>
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -57,7 +48,7 @@ const Dashboard = () => {
                 <p className="text-2xl font-bold">
                   {participants.reduce((sum, p) => sum + getParticipantStats(p.id).pending, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">Docs pendientes</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.pendingDocs') as string}</p>
               </div>
             </div>
           </CardContent>
@@ -72,7 +63,7 @@ const Dashboard = () => {
                 <p className="text-2xl font-bold">
                   {participants.reduce((sum, p) => sum + getParticipantStats(p.id).uploaded, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">Docs subidos</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.uploadedDocs') as string}</p>
               </div>
             </div>
           </CardContent>
@@ -87,16 +78,15 @@ const Dashboard = () => {
                 <p className="text-2xl font-bold">
                   {participants.reduce((sum, p) => sum + getParticipantStats(p.id).verified, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">Docs verificados</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.verifiedDocs') as string}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Per-participant progress */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>Progreso por participante</h2>
+        <h2 className="text-xl font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.progressByParticipant') as string}</h2>
         <div className="grid gap-4">
           {participants.map((p) => {
             const stats = getParticipantStats(p.id);
@@ -109,15 +99,15 @@ const Dashboard = () => {
                         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                           <Users className="w-4 h-4 text-primary" />
                         </div>
-                        <span className="font-medium">{p.name}</span>
+                        <span className="font-medium">{t('sidebar.participant') as string} {p.id}</span>
                       </div>
                       <span className="text-sm font-semibold text-primary">{stats.percentage}%</span>
                     </div>
                     <Progress value={stats.percentage} className="h-2" />
                     <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
-                      <span className={statusColors.pending}>● {stats.pending} pendientes</span>
-                      <span className={statusColors.uploaded}>● {stats.uploaded} subidos</span>
-                      <span className={statusColors.verified}>● {stats.verified} verificados</span>
+                      <span className={statusColors.pending}>● {stats.pending} {t('dashboard.pending') as string}</span>
+                      <span className={statusColors.uploaded}>● {stats.uploaded} {t('dashboard.uploaded') as string}</span>
+                      <span className={statusColors.verified}>● {stats.verified} {t('dashboard.verified') as string}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -127,7 +117,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Quick access */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link to="/comun">
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
@@ -136,8 +125,8 @@ const Dashboard = () => {
                 <FolderOpen className="w-6 h-6 text-accent-foreground" />
               </div>
               <div>
-                <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>Carpeta común</h3>
-                <p className="text-sm text-muted-foreground">Documentos compartidos del consorcio</p>
+                <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.commonFolder') as string}</h3>
+                <p className="text-sm text-muted-foreground">{t('dashboard.commonFolderDesc') as string}</p>
               </div>
             </CardContent>
           </Card>
@@ -149,8 +138,8 @@ const Dashboard = () => {
                 <span className="text-2xl">📚</span>
               </div>
               <div>
-                <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>Guías e información</h3>
-                <p className="text-sm text-muted-foreground">Instrucciones y recursos útiles</p>
+                <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.guidesTitle') as string}</h3>
+                <p className="text-sm text-muted-foreground">{t('dashboard.guidesDesc') as string}</p>
               </div>
             </CardContent>
           </Card>
