@@ -141,6 +141,10 @@ const Dashboard = () => {
               <div>
                 <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.commonFolder') as string}</h3>
                 <p className="text-sm text-muted-foreground">{t('dashboard.commonFolderDesc') as string}</p>
+                <div className="flex gap-3 mt-1 text-xs">
+                  <span className="text-warning">● {commonUploaded} {t('dashboard.uploaded') as string}</span>
+                  <span className="text-success">● {commonVerified} {t('dashboard.verified') as string}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
