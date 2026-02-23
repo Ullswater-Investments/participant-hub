@@ -1,6 +1,6 @@
 export const en = {
   login: {
-    title: 'Erasmus+ Portal',
+    title: 'YOUTH AGENDA',
     description: 'Consortium documentation management',
     passwordLabel: 'Consortium password',
     placeholder: 'Enter the shared password',
@@ -9,7 +9,7 @@ export const en = {
     error: 'Incorrect password. Contact the consortium coordinator.',
   },
   sidebar: {
-    portalTitle: 'Erasmus+ Portal',
+    portalTitle: 'YOUTH AGENDA',
     portalSubtitle: 'Document management',
     general: 'General',
     dashboard: 'Dashboard',
