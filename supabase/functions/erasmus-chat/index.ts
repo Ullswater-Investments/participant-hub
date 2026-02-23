@@ -98,7 +98,7 @@ European Youth Together projects aim to create cooperation networks enabling you
 
 ### Key links:
 - Full call details: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/ERASMUS-YOUTH-2026-YOUTH-TOG
-- Programme Guide 2026 (reference document): https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026
+- Programme Guide 2026 (reference document): https://erasmus-plus.ec.europa.eu/document/erasmus-programme-guide-2026`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
