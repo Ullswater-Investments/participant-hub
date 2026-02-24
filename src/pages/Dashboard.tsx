@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAllDocuments } from '@/hooks/useDocuments';
 import { participantDocuments } from '@/data/documentDefinitions';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown } from 'lucide-react';
+import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown, FileText, Download, X } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
 import { exportProgressPDF } from '@/utils/exportPDF';
 
@@ -20,6 +24,7 @@ const statusColors: Record<string, string> = {
 };
 
 const Dashboard = () => {
+  const [showUploaded, setShowUploaded] = useState(false);
   const { data: allDocs = [], isLoading } = useAllDocuments();
   const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
@@ -67,7 +72,7 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowUploaded(true)}>
           <CardContent className="pt-4 sm:pt-6 px-3 sm:px-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
@@ -158,7 +163,64 @@ const Dashboard = () => {
               <div>
                 <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.guidesTitle') as string}</h3>
                 <p className="text-sm text-muted-foreground">{t('dashboard.guidesDesc') as string}</p>
+
+      <Dialog open={showUploaded} onOpenChange={setShowUploaded}>
+        <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
+          <DialogHeader className="flex flex-row items-center justify-between pr-0">
+            <DialogTitle className="text-lg font-semibold">Documentos subidos</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            {allDocs.filter(d => d.status === 'uploaded').length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">No hay documentos subidos</p>
+            ) : (
+              <div className="space-y-2">
+                {allDocs.filter(d => d.status === 'uploaded').map(doc => (
+                  <div key={doc.id} className="flex items-center justify-between gap-2 p-2 rounded-lg border">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{doc.file_name || doc.document_name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {doc.participant_id ? `Participante ${doc.participant_id}` : 'Común'}
+                        </p>
+                      </div>
+                    </div>
+                    {doc.file_path && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0"
+                        onClick={async () => {
+                          const { data } = supabase.storage.from('documents').getPublicUrl(doc.file_path!);
+                          if (data?.publicUrl) {
+                            try {
+                              const response = await fetch(data.publicUrl);
+                              const blob = await response.blob();
+                              const url = window.URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = doc.file_name || 'documento';
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              window.URL.revokeObjectURL(url);
+                            } catch {
+                              window.open(data.publicUrl, '_blank');
+                            }
+                          }
+                        }}
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    </div>
             </CardContent>
           </Card>
         </Link>
