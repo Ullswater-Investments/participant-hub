@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAllDocuments } from '@/hooks/useDocuments';
 import { participantDocuments } from '@/data/documentDefinitions';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown } from 'lucide-react';
+import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown, FileText, Download, X } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
 import { exportProgressPDF } from '@/utils/exportPDF';
 
