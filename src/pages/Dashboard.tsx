@@ -163,7 +163,64 @@ const Dashboard = () => {
               <div>
                 <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.guidesTitle') as string}</h3>
                 <p className="text-sm text-muted-foreground">{t('dashboard.guidesDesc') as string}</p>
+
+      <Dialog open={showUploaded} onOpenChange={setShowUploaded}>
+        <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
+          <DialogHeader className="flex flex-row items-center justify-between pr-0">
+            <DialogTitle className="text-lg font-semibold">Documentos subidos</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            {allDocs.filter(d => d.status === 'uploaded').length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">No hay documentos subidos</p>
+            ) : (
+              <div className="space-y-2">
+                {allDocs.filter(d => d.status === 'uploaded').map(doc => (
+                  <div key={doc.id} className="flex items-center justify-between gap-2 p-2 rounded-lg border">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{doc.file_name || doc.document_name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {doc.participant_id ? `Participante ${doc.participant_id}` : 'Común'}
+                        </p>
+                      </div>
+                    </div>
+                    {doc.file_path && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0"
+                        onClick={async () => {
+                          const { data } = supabase.storage.from('documents').getPublicUrl(doc.file_path!);
+                          if (data?.publicUrl) {
+                            try {
+                              const response = await fetch(data.publicUrl);
+                              const blob = await response.blob();
+                              const url = window.URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = doc.file_name || 'documento';
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              window.URL.revokeObjectURL(url);
+                            } catch {
+                              window.open(data.publicUrl, '_blank');
+                            }
+                          }
+                        }}
+                      >
+                        <Download className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    </div>
             </CardContent>
           </Card>
         </Link>
