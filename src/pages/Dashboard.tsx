@@ -4,12 +4,12 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useAllDocuments } from '@/hooks/useDocuments';
+import { useAllDocuments, type Document } from '@/hooks/useDocuments';
 import { participantDocuments } from '@/data/documentDefinitions';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown, FileText, Download, X } from 'lucide-react';
+import { Users, FolderOpen, CheckCircle2, Clock, Upload, FileDown, FileText, Download, Eye } from 'lucide-react';
 import { DashboardChat } from '@/components/DashboardChat';
 import { exportProgressPDF } from '@/utils/exportPDF';
 
@@ -23,8 +23,40 @@ const statusColors: Record<string, string> = {
   verified: 'text-success',
 };
 
+const handleDownloadFile = async (filePath: string, fileName?: string | null) => {
+  const { data } = supabase.storage.from('documents').getPublicUrl(filePath);
+  if (data?.publicUrl) {
+    try {
+      const response = await fetch(data.publicUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName || filePath.split('/').pop() || 'documento';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      window.open(data.publicUrl, '_blank');
+    }
+  }
+};
+
+const getPreviewUrl = (filePath: string) => {
+  const { data } = supabase.storage.from('documents').getPublicUrl(filePath);
+  return data?.publicUrl || '';
+};
+
+const isPreviewable = (fileName: string | null) => {
+  if (!fileName) return false;
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  return ['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext || '');
+};
+
 const Dashboard = () => {
   const [showUploaded, setShowUploaded] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState<Document | null>(null);
   const { data: allDocs = [], isLoading } = useAllDocuments();
   const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
@@ -41,6 +73,8 @@ const Dashboard = () => {
     const percentage = totalDocsPerParticipant > 0 ? Math.round((completed / totalDocsPerParticipant) * 100) : 0;
     return { uploaded, verified, pending: totalDocsPerParticipant - completed, percentage };
   };
+
+  const uploadedDocs = allDocs.filter(d => d.status === 'uploaded');
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl pb-16 sm:pb-0">
@@ -163,18 +197,23 @@ const Dashboard = () => {
               <div>
                 <h3 className="font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{t('dashboard.guidesTitle') as string}</h3>
                 <p className="text-sm text-muted-foreground">{t('dashboard.guidesDesc') as string}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
 
-      <Dialog open={showUploaded} onOpenChange={setShowUploaded}>
+      <Dialog open={showUploaded && !previewDoc} onOpenChange={setShowUploaded}>
         <DialogContent className="max-w-md" onInteractOutside={(e) => e.preventDefault()}>
-          <DialogHeader className="flex flex-row items-center justify-between pr-0">
+          <DialogHeader>
             <DialogTitle className="text-lg font-semibold">Documentos subidos</DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh]">
-            {allDocs.filter(d => d.status === 'uploaded').length === 0 ? (
+            {uploadedDocs.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-4">No hay documentos subidos</p>
             ) : (
               <div className="space-y-2">
-                {allDocs.filter(d => d.status === 'uploaded').map(doc => (
+                {uploadedDocs.map(doc => (
                   <div key={doc.id} className="flex items-center justify-between gap-2 p-2 rounded-lg border">
                     <div className="flex items-center gap-2 min-w-0">
                       <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -185,34 +224,28 @@ const Dashboard = () => {
                         </p>
                       </div>
                     </div>
-                    {doc.file_path && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="shrink-0"
-                        onClick={async () => {
-                          const { data } = supabase.storage.from('documents').getPublicUrl(doc.file_path!);
-                          if (data?.publicUrl) {
-                            try {
-                              const response = await fetch(data.publicUrl);
-                              const blob = await response.blob();
-                              const url = window.URL.createObjectURL(blob);
-                              const a = document.createElement('a');
-                              a.href = url;
-                              a.download = doc.file_name || 'documento';
-                              document.body.appendChild(a);
-                              a.click();
-                              document.body.removeChild(a);
-                              window.URL.revokeObjectURL(url);
-                            } catch {
-                              window.open(data.publicUrl, '_blank');
-                            }
-                          }
-                        }}
-                      >
-                        <Download className="w-4 h-4" />
-                      </Button>
-                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {doc.file_path && isPreviewable(doc.file_name) && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Vista previa"
+                          onClick={() => setPreviewDoc(doc)}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {doc.file_path && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Descargar"
+                          onClick={() => handleDownloadFile(doc.file_path!, doc.file_name)}
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -220,11 +253,46 @@ const Dashboard = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
-    </div>
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
+
+      <Dialog open={!!previewDoc} onOpenChange={(open) => { if (!open) setPreviewDoc(null); }}>
+        <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold truncate">
+              {previewDoc?.file_name || previewDoc?.document_name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 overflow-hidden rounded-md border bg-muted/30">
+            {previewDoc?.file_path && (
+              (() => {
+                const ext = previewDoc.file_name?.split('.').pop()?.toLowerCase();
+                const url = getPreviewUrl(previewDoc.file_path);
+                if (ext === 'pdf') {
+                  return <iframe src={url} className="w-full h-[60vh]" title="Vista previa" />;
+                }
+                if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext || '')) {
+                  return (
+                    <div className="flex items-center justify-center p-4 h-[60vh]">
+                      <img src={url} alt={previewDoc.file_name || ''} className="max-w-full max-h-full object-contain" />
+                    </div>
+                  );
+                }
+                return <p className="text-sm text-muted-foreground text-center py-8">Vista previa no disponible</p>;
+              })()
+            )}
+          </div>
+          <div className="flex justify-end pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => previewDoc?.file_path && handleDownloadFile(previewDoc.file_path, previewDoc.file_name)}
+            >
+              <Download className="w-4 h-4" />
+              Descargar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
