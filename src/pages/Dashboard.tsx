@@ -24,6 +24,7 @@ const statusColors: Record<string, string> = {
 };
 
 const Dashboard = () => {
+  const [showUploaded, setShowUploaded] = useState(false);
   const { data: allDocs = [], isLoading } = useAllDocuments();
   const { language, t } = useLanguage();
   const totalDocsPerParticipant = participantDocuments.length;
