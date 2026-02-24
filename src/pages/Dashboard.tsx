@@ -72,7 +72,7 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowUploaded(true)}>
           <CardContent className="pt-4 sm:pt-6 px-3 sm:px-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
